@@ -1,0 +1,28 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+/*.xcodeproj
+
+# macOS
+.DS_Store
+
+# Binary files (these will be distributed separately)
+*.a
+*.framework
+*.xcframework
+dist/
+BinaryTargets/
+
+# Temporary files
+*.log
+tmp/
+temp/
