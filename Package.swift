@@ -12,21 +12,18 @@ let package = Package(
             name: "EdgeLLM",
             targets: ["EdgeLLM"]
         ),
+        .plugin(
+            name: "EdgeLLMSetup",
+            targets: ["EdgeLLMSetupPlugin"]
+        )
     ],
     dependencies: [
-        // MLCSwift dependency for source distribution (v0.1.x)
-        // For local development
-        .package(path: "../ios/MLCSwift")
-        
-        // For release version, use:
-        // .package(url: "https://github.com/mlc-ai/mlc-llm", from: "0.1.0")
+        // Dependencies are automatically managed by setup script
     ],
     targets: [
         .target(
             name: "EdgeLLM",
-            dependencies: [
-                .product(name: "MLCSwift", package: "MLCSwift")
-            ],
+            dependencies: [],
             path: "Sources/EdgeLLM",
             resources: [
                 .process("Resources")
@@ -34,6 +31,9 @@ let package = Package(
             swiftSettings: [
                 .interoperabilityMode(.Cxx),
                 .unsafeFlags(["-enable-bare-slash-regex"])
+            ],
+            plugins: [
+                .plugin(name: "EdgeLLMSetupPlugin")
             ]
         ),
         .testTarget(
@@ -41,6 +41,11 @@ let package = Package(
             dependencies: ["EdgeLLM"],
             path: "Tests/EdgeLLMTests"
         ),
+        .plugin(
+            name: "EdgeLLMSetupPlugin",
+            capability: .buildTool(),
+            path: "Plugins/EdgeLLMSetupPlugin"
+        )
     ]
 )
 

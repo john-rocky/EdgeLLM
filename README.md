@@ -18,18 +18,31 @@ let response = try await EdgeLLM.chat("Hello, world!")
 
 ### Swift Package Manager
 
+EdgeLLM automatically downloads and configures all required dependencies on first build!
+
 In Xcode:
 
 1. File → Add Package Dependencies
-2. Enter URL: `https://github.com/yourusername/EdgeLLM`
+2. Enter URL: `https://github.com/john-rocky/EdgeLLM`
 3. Select version and click "Add Package"
+4. **First build will automatically download dependencies** (~300MB)
 
 Or add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/EdgeLLM", from: "0.1.0")
+    .package(url: "https://github.com/john-rocky/EdgeLLM", from: "0.1.0")
 ]
+```
+
+### Manual Setup (Optional)
+
+If automatic setup fails, run:
+
+```bash
+git clone https://github.com/john-rocky/EdgeLLM
+cd EdgeLLM
+./scripts/setup.sh
 ```
 
 ## Usage
