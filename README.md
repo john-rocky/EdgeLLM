@@ -6,6 +6,25 @@ Run Large Language Models on iOS with **just one line of code**
 let response = try await EdgeLLM.chat("Hello, world!")
 ```
 
+> **Note**: EdgeLLM v0.1.0 is now available! This is an early release - feedback and contributions are welcome.
+
+## Quick Start
+
+```swift
+import EdgeLLM
+
+// 1. Basic chat
+let response = try await EdgeLLM.chat("Hello!")
+
+// 2. Choose a model
+let response = try await EdgeLLM.chat("Hello!", model: .llama3_8b)
+
+// 3. Stream tokens
+for try await token in EdgeLLM.stream("Tell me a joke") {
+    print(token, terminator: "")
+}
+```
+
 ## Features
 
 - 🚀 **Dead Simple** - Chat with LLMs in one line
@@ -18,14 +37,11 @@ let response = try await EdgeLLM.chat("Hello, world!")
 
 ### Swift Package Manager
 
-EdgeLLM automatically downloads and configures all required dependencies on first build!
-
 In Xcode:
 
 1. File → Add Package Dependencies
 2. Enter URL: `https://github.com/john-rocky/EdgeLLM`
 3. Select version and click "Add Package"
-4. **First build will automatically download dependencies** (~300MB)
 
 Or add to your `Package.swift`:
 
@@ -35,15 +51,9 @@ dependencies: [
 ]
 ```
 
-### Manual Setup (Optional)
+### Note on First Use
 
-If automatic setup fails, run:
-
-```bash
-git clone https://github.com/john-rocky/EdgeLLM
-cd EdgeLLM
-./scripts/setup.sh
-```
+Models are downloaded automatically when first used (1-2GB per model, WiFi recommended).
 
 ## Usage
 
@@ -61,7 +71,7 @@ print(response)
 
 ```swift
 // Receive response token by token
-for try await token in try await EdgeLLM.stream("Tell me a story") {
+for try await token in EdgeLLM.stream("Tell me a story") {
     print(token, terminator: "")
 }
 ```
@@ -96,20 +106,17 @@ await llm.reset()
 
 ## Supported Models
 
-| Model | Size | Description |
-|-------|------|-------------|
-| `.gemma2b` | 2B | Google Gemma - Lightweight & fast (Default) |
-| `.phi2` | 2.7B | Microsoft Phi-2 - Balanced performance |
-| `.llama3_8b` | 8B | Meta Llama 3 - Highest quality (needs more memory) |
+| Model | Size | Description | Download Size |
+|-------|------|-------------|---------------|
+| `.gemma2b` | 2B | Google Gemma - Lightweight & fast (Default) | ~1.3GB |
+| `.phi2` | 2.7B | Microsoft Phi-2 - Balanced performance | ~1.8GB |
+| `.llama3_8b` | 8B | Meta Llama 3 - Highest quality (needs more memory) | ~4.5GB |
 
-## Sample App
+Models are automatically downloaded from Hugging Face on first use.
 
-Check out the sample app in `Examples/SimpleChat`:
+## Example App
 
-```bash
-cd Examples/SimpleChat
-open SimpleChat.xcodeproj
-```
+A sample SwiftUI app is available in the `Examples/SimpleChat` directory.
 
 ## Requirements
 
@@ -121,8 +128,8 @@ open SimpleChat.xcodeproj
 
 On iPhone 15 Pro:
 - Initial load: 2-3 seconds
-- Token generation: 15-20 tokens/sec
-- Memory usage: 2-3GB
+- Token generation: 10-15 tokens/sec (Gemma 2B)
+- Memory usage: 2-4GB depending on model
 
 ## Troubleshooting
 
@@ -145,6 +152,12 @@ MIT License
 ## Contributing
 
 Pull requests are welcome!
+
+## Links
+
+- [Documentation](https://github.com/john-rocky/EdgeLLM/tree/main/docs)
+- [Example App](https://github.com/john-rocky/EdgeLLM/tree/main/Examples/SimpleChat)
+- [Report Issues](https://github.com/john-rocky/EdgeLLM/issues)
 
 ## Credits
 
