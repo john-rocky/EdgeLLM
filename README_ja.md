@@ -21,14 +21,14 @@ let response = try await EdgeLLM.chat("こんにちは！")
 Xcodeで以下の手順：
 
 1. File → Add Package Dependencies
-2. URLを入力: `https://github.com/yourusername/EdgeLLM`
+2. URLを入力: `https://github.com/john-rocky/EdgeLLM`
 3. バージョンを選択して「Add Package」
 
 または`Package.swift`に追加：
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/EdgeLLM", from: "0.1.0")
+    .package(url: "https://github.com/john-rocky/EdgeLLM", from: "0.1.0")
 ]
 ```
 

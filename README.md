@@ -72,7 +72,7 @@ for try await token in try await EdgeLLM.stream("Tell me a story") {
 // Specify model and options
 let response = try await EdgeLLM.chat(
     "Technical question",
-    model: .phi3_5_mini,  // Use different model
+    model: .llama3_8b,  // Use different model
     options: EdgeLLM.Options(
         temperature: 0.3,  // More deterministic
         maxTokens: 500
@@ -84,7 +84,7 @@ let response = try await EdgeLLM.chat(
 
 ```swift
 // Keep LLM instance for conversations
-let llm = try await EdgeLLM(model: .llama3_2)
+let llm = try await EdgeLLM(model: .gemma2b)
 
 // Multiple exchanges
 let response1 = try await llm.chat("My name is John")
@@ -98,9 +98,9 @@ await llm.reset()
 
 | Model | Size | Description |
 |-------|------|-------------|
-| `.llama3_2` | 3B | Meta Llama 3.2 - Balanced performance |
-| `.gemma2_2b` | 2B | Google Gemma 2 - Lightweight & fast |
-| `.phi3_5_mini` | 3.8B | Microsoft Phi-3.5 - Great for technical tasks |
+| `.gemma2b` | 2B | Google Gemma - Lightweight & fast (Default) |
+| `.phi2` | 2.7B | Microsoft Phi-2 - Balanced performance |
+| `.llama3_8b` | 8B | Meta Llama 3 - Highest quality (needs more memory) |
 
 ## Sample App
 
@@ -132,10 +132,10 @@ Models are downloaded automatically on first run (WiFi recommended).
 
 ### Out of Memory
 
-Try a smaller model like `.gemma2_2b`:
+Try a smaller model like `.gemma2b`:
 
 ```swift
-let response = try await EdgeLLM.chat("Hello", model: .gemma2_2b)
+let response = try await EdgeLLM.chat("Hello", model: .gemma2b)
 ```
 
 ## License
