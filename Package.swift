@@ -18,12 +18,12 @@ let package = Package(
         )
     ],
     dependencies: [
-        // Dependencies are automatically managed by setup script
+        .package(path: "../ios/MLCSwift")
     ],
     targets: [
         .target(
             name: "EdgeLLM",
-            dependencies: [],
+            dependencies: ["MLCSwift"],
             path: "Sources/EdgeLLM",
             resources: [
                 .process("Resources")
