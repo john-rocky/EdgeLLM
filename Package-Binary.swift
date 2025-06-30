@@ -33,8 +33,8 @@ let package = Package(
         // Runtime binary from GitHub Releases
         .binaryTarget(
             name: "EdgeLLMRuntime",
-            url: "https://github.com/yourusername/EdgeLLM/releases/download/v0.2.0/EdgeLLMRuntime.xcframework.zip",
-            checksum: "CHECKSUM_HERE"
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.1.0/EdgeLLM-Bundle.zip",
+            checksum: "bc9188ab45b36f6a071cce7e1c9196ccf84c2cdc2dfcd51c33518f10db4ed8e5"
         ),
         
         // Alternative: Runtime from custom CDN
