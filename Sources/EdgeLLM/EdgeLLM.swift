@@ -17,40 +17,40 @@ public actor EdgeLLM {
     
     /// サポートされているモデル
     public enum Model: String, CaseIterable {
-        case llama3_2 = "Llama-3.2-3B-Instruct-q4f16_1-MLC"
-        case gemma2_2b = "gemma-2-2b-q4f16_1-MLC"
-        case phi3_5_mini = "Phi-3.5-mini-instruct-q4f16_1-MLC"
+        case llama3_8b = "Llama-3-8B-Instruct-q4f16_1-MLC"
+        case gemma2b = "gemma-2b-it-q4f16_1-MLC"
+        case phi2 = "phi-2-q4f16_1-MLC"
         
         var modelLib: String {
             switch self {
-            case .llama3_2:
-                return "llama_q4f16_1_d44304359a2802d16aa168086928bcad"
-            case .gemma2_2b:
-                return "gemma2_q4f16_1_779a95d4ef785ea159992d38fac2317f"
-            case .phi3_5_mini:
-                return "phi3_q4f16_1_eba3d93dab5930b68f7296c1fd0d29ec"
+            case .llama3_8b:
+                return "llama3_q4f16_1"  // TODO: 実際のモデルライブラリIDを確認
+            case .gemma2b:
+                return "gemma_q4f16_1"   // TODO: 実際のモデルライブラリIDを確認
+            case .phi2:
+                return "phi2_q4f16_1"    // TODO: 実際のモデルライブラリIDを確認
             }
         }
         
         var displayName: String {
             switch self {
-            case .llama3_2:
-                return "Llama 3.2 (3B)"
-            case .gemma2_2b:
-                return "Gemma 2 (2B)"
-            case .phi3_5_mini:
-                return "Phi-3.5 Mini"
+            case .llama3_8b:
+                return "Llama 3 (8B)"
+            case .gemma2b:
+                return "Gemma (2B)"
+            case .phi2:
+                return "Phi-2"
             }
         }
         
         var huggingFaceURL: String? {
             switch self {
-            case .llama3_2:
-                return nil // バンドル済み
-            case .gemma2_2b:
-                return "https://huggingface.co/mlc-ai/gemma-2-2b-it-q4f16_1-MLC"
-            case .phi3_5_mini:
-                return "https://huggingface.co/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
+            case .llama3_8b:
+                return "https://huggingface.co/mlc-ai/Llama-3-8B-Instruct-q4f16_1-MLC"
+            case .gemma2b:
+                return "https://huggingface.co/mlc-ai/gemma-2b-it-q4f16_1-MLC"
+            case .phi2:
+                return "https://huggingface.co/mlc-ai/phi-2-q4f16_1-MLC"
             }
         }
     }
@@ -296,7 +296,7 @@ extension EdgeLLM {
     /// - Returns: モデルの完全なレスポンス
     public static func chat(
         _ prompt: String,
-        model: Model = .llama3_2,
+        model: Model = .gemma2b,
         options: Options = .default
     ) async throws -> String {
         let llm = try await EdgeLLM(model: model, options: options)
@@ -311,7 +311,7 @@ extension EdgeLLM {
     /// - Returns: トークンの非同期ストリーム
     public static func stream(
         _ prompt: String,
-        model: Model = .llama3_2,
+        model: Model = .gemma2b,
         options: Options = .default
     ) async throws -> AsyncThrowingStream<String, Error> {
         let llm = try await EdgeLLM(model: model, options: options)
