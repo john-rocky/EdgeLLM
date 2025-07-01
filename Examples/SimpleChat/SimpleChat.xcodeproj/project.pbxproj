@@ -75,6 +75,7 @@
 			);
 			name = SimpleChat;
 			packageProductDependencies = (
+				8B1234631234567890ABCDEF /* EdgeLLM */,
 			);
 			productName = SimpleChat;
 			productReference = 8B1234521234567890ABCDEF /* SimpleChat.app */;
@@ -105,6 +106,7 @@
 			);
 			mainGroup = 8B1234491234567890ABCDEF;
 			packageReferences = (
+				8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */,
 			);
 			productRefGroup = 8B1234531234567890ABCDEF /* Products */;
 			projectDirPath = "";
@@ -338,6 +340,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/john-rocky/EdgeLLM";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8B1234631234567890ABCDEF /* EdgeLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */;
+			productName = EdgeLLM;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B12344A1234567890ABCDEF /* Project object */;
 }
