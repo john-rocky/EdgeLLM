@@ -17,40 +17,40 @@ public actor EdgeLLM {
     
     /// サポートされているモデル
     public enum Model: String, CaseIterable {
-        case llama3_8b = "Llama-3-8B-Instruct-q4f16_1-MLC"
-        case gemma2b = "gemma-2b-it-q4f16_1-MLC"
-        case phi2 = "phi-2-q4f16_1-MLC"
+        case qwen05b = "Qwen2-0.5B-Instruct-q0f16-MLC"
+        case gemma2b = "gemma-2-2b-it-q4f16_1-MLC"
+        case phi3_mini = "Phi-3.5-mini-instruct-q4f16_1-MLC"
         
         var modelLib: String {
             switch self {
-            case .llama3_8b:
-                return "llama3_q4f16_1"  // TODO: 実際のモデルライブラリIDを確認
+            case .qwen05b:
+                return "qwen2_q0f16"     // Qwen2 0.5B quantized model
             case .gemma2b:
-                return "gemma_q4f16_1"   // TODO: 実際のモデルライブラリIDを確認
-            case .phi2:
-                return "phi2_q4f16_1"    // TODO: 実際のモデルライブラリIDを確認
+                return "gemma2_q4f16_1"  // Gemma 2B quantized model
+            case .phi3_mini:
+                return "phi3_q4f16_1"    // Phi-3.5 mini quantized model
             }
         }
         
         var displayName: String {
             switch self {
-            case .llama3_8b:
-                return "Llama 3 (8B)"
+            case .qwen05b:
+                return "Qwen 0.5B"
             case .gemma2b:
-                return "Gemma (2B)"
-            case .phi2:
-                return "Phi-2"
+                return "Gemma 2B"
+            case .phi3_mini:
+                return "Phi-3.5 Mini"
             }
         }
         
         var huggingFaceURL: String? {
             switch self {
-            case .llama3_8b:
-                return "https://huggingface.co/mlc-ai/Llama-3-8B-Instruct-q4f16_1-MLC"
+            case .qwen05b:
+                return "https://huggingface.co/mlc-ai/Qwen2-0.5B-Instruct-q0f16-MLC"
             case .gemma2b:
-                return "https://huggingface.co/mlc-ai/gemma-2b-it-q4f16_1-MLC"
-            case .phi2:
-                return "https://huggingface.co/mlc-ai/phi-2-q4f16_1-MLC"
+                return "https://huggingface.co/mlc-ai/gemma-2-2b-it-q4f16_1-MLC"
+            case .phi3_mini:
+                return "https://huggingface.co/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
             }
         }
     }
