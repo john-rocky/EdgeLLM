@@ -111,6 +111,7 @@
 			);
 			mainGroup = 8B1234491234567890ABCDEF;
 			packageReferences = (
+				73217ED52E13769C00482B0C /* XCRemoteSwiftPackageReference "EdgeLLM" */,
 			);
 			productRefGroup = 8B1234531234567890ABCDEF /* Products */;
 			projectDirPath = "";
@@ -350,6 +351,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		73217ED52E13769C00482B0C /* XCRemoteSwiftPackageReference "EdgeLLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/john-rocky/EdgeLLM.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 8B12344A1234567890ABCDEF /* Project object */;
 }
