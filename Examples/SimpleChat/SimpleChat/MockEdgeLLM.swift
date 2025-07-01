@@ -6,9 +6,9 @@ import Foundation
 public struct EdgeLLM {
     
     public enum Model: String, CaseIterable {
+        case qwen05b = "Qwen 0.5B"
         case gemma2b = "Gemma 2B"
-        case phi2 = "Phi-2"  
-        case llama3_8b = "Llama 3 8B"
+        case phi3_mini = "Phi-3.5 Mini"
     }
     
     public struct Options {
