@@ -10,6 +10,8 @@
 		8B1234561234567890ABCDEF /* SimpleChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234551234567890ABCDEF /* SimpleChatApp.swift */; };
 		8B1234581234567890ABCDEF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234571234567890ABCDEF /* ContentView.swift */; };
 		8B12345A1234567890ABCDEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B1234591234567890ABCDEF /* Assets.xcassets */; };
+		8B1234641234567890ABCDEF /* MockEdgeLLM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234651234567890ABCDEF /* MockEdgeLLM.swift */; };
+		8B1234661234567890ABCDEF /* StreamingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234671234567890ABCDEF /* StreamingContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +20,8 @@
 		8B1234571234567890ABCDEF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8B1234591234567890ABCDEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B12345B1234567890ABCDEF /* SimpleChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimpleChat.entitlements; sourceTree = "<group>"; };
+		8B1234651234567890ABCDEF /* MockEdgeLLM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEdgeLLM.swift; sourceTree = "<group>"; };
+		8B1234671234567890ABCDEF /* StreamingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +56,8 @@
 			children = (
 				8B1234551234567890ABCDEF /* SimpleChatApp.swift */,
 				8B1234571234567890ABCDEF /* ContentView.swift */,
+				8B1234671234567890ABCDEF /* StreamingContentView.swift */,
+				8B1234651234567890ABCDEF /* MockEdgeLLM.swift */,
 				8B1234591234567890ABCDEF /* Assets.xcassets */,
 				8B12345B1234567890ABCDEF /* SimpleChat.entitlements */,
 			);
@@ -75,7 +81,6 @@
 			);
 			name = SimpleChat;
 			packageProductDependencies = (
-				8B1234631234567890ABCDEF /* EdgeLLM */,
 			);
 			productName = SimpleChat;
 			productReference = 8B1234521234567890ABCDEF /* SimpleChat.app */;
@@ -106,7 +111,6 @@
 			);
 			mainGroup = 8B1234491234567890ABCDEF;
 			packageReferences = (
-				8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */,
 			);
 			productRefGroup = 8B1234531234567890ABCDEF /* Products */;
 			projectDirPath = "";
@@ -134,6 +138,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B1234581234567890ABCDEF /* ContentView.swift in Sources */,
+				8B1234661234567890ABCDEF /* StreamingContentView.swift in Sources */,
+				8B1234641234567890ABCDEF /* MockEdgeLLM.swift in Sources */,
 				8B1234561234567890ABCDEF /* SimpleChatApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,12 +274,14 @@
 				CODE_SIGN_ENTITLEMENTS = SimpleChat/SimpleChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UFUKVC4NJ4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SimpleChat/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -281,7 +289,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ai.edge.SimpleChat";
+				PRODUCT_BUNDLE_IDENTIFIER = com.daisuke.mlc.MLCChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -297,12 +305,14 @@
 				CODE_SIGN_ENTITLEMENTS = SimpleChat/SimpleChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = UFUKVC4NJ4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SimpleChat/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -310,7 +320,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ai.edge.SimpleChat";
+				PRODUCT_BUNDLE_IDENTIFIER = com.daisuke.mlc.MLCChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -340,25 +350,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/john-rocky/EdgeLLM";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8B1234631234567890ABCDEF /* EdgeLLM */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8B1234621234567890ABCDEF /* XCRemoteSwiftPackageReference "EdgeLLM" */;
-			productName = EdgeLLM;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B12344A1234567890ABCDEF /* Project object */;
 }
