@@ -7,7 +7,7 @@ let package = Package(
         .iOS(.v14)
     ],
     dependencies: [
-        .package(url: "https://github.com/john-rocky/EdgeLLM", from: "0.1.0")
+        .package(url: "https://github.com/john-rocky/EdgeLLM", branch: "complete-package")
     ],
     targets: []
 )
