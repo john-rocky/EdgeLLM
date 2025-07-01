@@ -11,21 +11,40 @@ let package = Package(
         .library(
             name: "EdgeLLM",
             targets: ["EdgeLLM"]
+        ),
+        .plugin(
+            name: "EdgeLLMSetup",
+            targets: ["EdgeLLMSetupPlugin"]
         )
     ],
     dependencies: [
+        .package(path: "../ios/MLCSwift")
     ],
     targets: [
         .target(
             name: "EdgeLLM",
-            dependencies: [],
+            dependencies: ["MLCSwift"],
             path: "Sources/EdgeLLM",
             resources: [
                 .process("Resources")
             ],
             swiftSettings: [
+                .interoperabilityMode(.Cxx),
                 .unsafeFlags(["-enable-bare-slash-regex"])
+            ],
+            plugins: [
+                .plugin(name: "EdgeLLMSetupPlugin")
             ]
+        ),
+        .testTarget(
+            name: "EdgeLLMTests",
+            dependencies: ["EdgeLLM"],
+            path: "Tests/EdgeLLMTests"
+        ),
+        .plugin(
+            name: "EdgeLLMSetupPlugin",
+            capability: .buildTool(),
+            path: "Plugins/EdgeLLMSetupPlugin"
         )
     ]
 )
