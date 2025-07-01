@@ -5,7 +5,7 @@ let package = Package(
     name: "EdgeLLM",
     platforms: [
         .iOS(.v14),
-        .macOS(.v13),
+        .macOS(.v14),
         .visionOS(.v1)
     ],
     products: [
@@ -14,22 +14,20 @@ let package = Package(
             targets: ["EdgeLLM"]
         ),
     ],
-    dependencies: [
-        .package(path: "../ios/MLCSwift")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "EdgeLLM",
-            dependencies: [
-                .product(name: "MLCSwift", package: "MLCSwift")
-            ],
+            dependencies: ["MLCRuntime"],
             path: "Sources/EdgeLLM",
-            resources: [
-                .process("Resources")
-            ],
             swiftSettings: [
                 .unsafeFlags(["-enable-bare-slash-regex"])
             ]
+        ),
+        .binaryTarget(
+            name: "MLCRuntime",
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.2.0/MLCRuntime.xcframework.zip",
+            checksum: "f555cf5b549575d5dba7c6d4bf27a928c04a5620d15c5474fa7bb3efa12b6a23"
         )
     ]
 )
