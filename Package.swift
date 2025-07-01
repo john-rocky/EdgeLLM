@@ -16,6 +16,11 @@ let package = Package(
     ],
     dependencies: [],
     targets: [
+        .binaryTarget(
+            name: "MLCRuntime",
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.3.0/MLCRuntime.xcframework.zip",
+            checksum: "ccbf13400898c99eaddbb9b82eac0174747fc462a8f6a020a838d919f6d04514"
+        ),
         .target(
             name: "EdgeLLM",
             dependencies: ["MLCRuntime"],
@@ -23,11 +28,6 @@ let package = Package(
             swiftSettings: [
                 .unsafeFlags(["-enable-bare-slash-regex"])
             ]
-        ),
-        .binaryTarget(
-            name: "MLCRuntime",
-            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.2.0/MLCRuntime.xcframework.zip",
-            checksum: "f555cf5b549575d5dba7c6d4bf27a928c04a5620d15c5474fa7bb3efa12b6a23"
         )
     ]
 )
