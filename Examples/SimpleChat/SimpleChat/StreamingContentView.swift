@@ -1,5 +1,6 @@
 import SwiftUI
-import EdgeLLM
+// Note: In a real app, import EdgeLLM package
+// import EdgeLLM
 
 // Alternative view with streaming support
 struct StreamingContentView: View {
