@@ -2,9 +2,9 @@ import Foundation
 import os
 
 /// EdgeLLMランタイムの動的ロード管理
-@available(iOS 14.0, macOS 13.0, *)
+@available(iOS 14.0, macOS 11.0, *)
 public class EdgeLLMRuntimeLoader {
-    private static let logger = Logger(subsystem: "ai.edge.llm", category: "RuntimeLoader")
+    private let logger = Logger(subsystem: "ai.edge.llm", category: "RuntimeLoader")
     
     /// ランタイムのダウンロードURL
     public struct RuntimeSource {
@@ -41,7 +41,7 @@ public class EdgeLLMRuntimeLoader {
         logger.info("Starting runtime download from: \(source)")
         
         guard let url = URL(string: source) else {
-            throw EdgeLLMError.invalidURL
+            throw EdgeLLMError.invalidURL(source)
         }
         
         // ダウンロード先の準備
@@ -83,7 +83,7 @@ public class EdgeLLMRuntimeLoader {
         task.waitUntilExit()
         
         guard task.terminationStatus == 0 else {
-            throw EdgeLLMError.unzipFailed
+            throw EdgeLLMError.extractionFailed("Failed to unzip runtime")
         }
     }
     
@@ -114,10 +114,10 @@ extension URLSession {
 extension EdgeLLM {
     /// スマートな初期化（必要に応じてランタイムをダウンロード）
     public static func initialize() async throws {
+        let loader = EdgeLLMRuntimeLoader()
+        
         if !EdgeLLMRuntimeLoader.isRuntimeAvailable() {
-            logger.info("Runtime not found. Downloading...")
-            
-            let loader = EdgeLLMRuntimeLoader()
+            print("Runtime not found. Downloading...")
             
             // 複数のソースから試行
             let sources = [
@@ -131,24 +131,17 @@ extension EdgeLLM {
                     try await loader.installRuntime(from: source)
                     break
                 } catch {
-                    logger.error("Failed to download from \(source): \(error)")
+                    print("Failed to download from \(source): \(error)")
                     continue
                 }
             }
             
             guard EdgeLLMRuntimeLoader.isRuntimeAvailable() else {
-                throw EdgeLLMError.runtimeNotAvailable
+                throw EdgeLLMError.downloadFailed("Runtime not available after download attempts")
             }
         }
         
-        logger.info("Runtime is ready")
+        print("Runtime is ready")
     }
 }
 
-// MARK: - Errors
-
-extension EdgeLLMError {
-    static let invalidURL = EdgeLLMError.downloadFailed("Invalid URL")
-    static let unzipFailed = EdgeLLMError.downloadFailed("Failed to unzip runtime")
-    static let runtimeNotAvailable = EdgeLLMError.downloadFailed("Runtime not available after download attempts")
-}

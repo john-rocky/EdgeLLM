@@ -1,7 +1,7 @@
 import Foundation
 import os
 
-@available(iOS 14.0, macOS 13.0, *)
+@available(iOS 14.0, macOS 11.0, *)
 public struct ModelDownloader {
     
     private let logger = Logger(subsystem: "ai.edge.llm", category: "ModelDownloader")
@@ -142,7 +142,8 @@ public struct ModelDownloader {
         
         try data.write(to: destination)
         
-        if let contentLength = httpResponse.expectedContentLength {
+        let contentLength = httpResponse.expectedContentLength
+        if contentLength > 0 {
             progressHandler?(DownloadProgress(
                 bytesWritten: Int64(data.count),
                 totalBytes: contentLength
@@ -189,7 +190,7 @@ public struct ModelDownloader {
 // SHA256 implementation (simplified)
 import CryptoKit
 
-@available(iOS 14.0, macOS 13.0, *)
+@available(iOS 14.0, macOS 11.0, *)
 extension ModelDownloader {
     struct SHA256 {
         private var hasher = CryptoKit.SHA256()
@@ -198,35 +199,9 @@ extension ModelDownloader {
             hasher.update(data: data)
         }
         
-        func finalize() -> SHA256.Digest {
+        func finalize() -> CryptoKit.SHA256.Digest {
             return hasher.finalize()
         }
     }
 }
 
-// EdgeLLM errors
-public enum EdgeLLMError: LocalizedError {
-    case invalidURL(String)
-    case downloadFailed(String)
-    case checksumMismatch(expected: String, actual: String)
-    case extractionFailed(String)
-    case modelNotFound(String)
-    case modelNotLoaded
-    
-    public var errorDescription: String? {
-        switch self {
-        case .invalidURL(let url):
-            return "Invalid URL: \(url)"
-        case .downloadFailed(let reason):
-            return "Download failed: \(reason)"
-        case .checksumMismatch(let expected, let actual):
-            return "Checksum mismatch. Expected: \(expected), Actual: \(actual)"
-        case .extractionFailed(let reason):
-            return "Extraction failed: \(reason)"
-        case .modelNotFound(let model):
-            return "Model not found: \(model)"
-        case .modelNotLoaded:
-            return "Model not loaded"
-        }
-    }
-}

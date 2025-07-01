@@ -10,7 +10,7 @@ import MLCSwift
 /// let response = try await llm.chat("Hello, world!")
 /// print(response)
 /// ```
-@available(iOS 14.0, macOS 13.0, *)
+@available(iOS 14.0, macOS 11.0, *)
 public actor EdgeLLM {
     
     // MARK: - Public Types
@@ -150,8 +150,8 @@ public actor EdgeLLM {
                         messages: request.messages,
                         model: request.model,
                         max_tokens: request.max_tokens,
-                        temperature: request.temperature,
-                        stream_options: StreamOptions(include_usage: true)
+                        stream_options: StreamOptions(include_usage: true),
+                        temperature: request.temperature
                     ) {
                         for choice in response.choices {
                             if let content = choice.delta.content {
@@ -324,7 +324,7 @@ extension EdgeLLM {
         options: Options = .default
     ) async throws -> AsyncThrowingStream<String, Error> {
         let llm = try await EdgeLLM(model: model, options: options)
-        return llm.stream(prompt)
+        return await llm.stream(prompt)
     }
 }
 
@@ -352,6 +352,9 @@ public enum EdgeLLMError: LocalizedError {
     case modelNotLoaded
     case downloadFailed(String)
     case downloadNotImplemented
+    case invalidURL(String)
+    case checksumMismatch(expected: String, actual: String)
+    case extractionFailed(String)
     
     public var errorDescription: String? {
         switch self {
@@ -363,6 +366,12 @@ public enum EdgeLLMError: LocalizedError {
             return "Model download failed: \(reason)"
         case .downloadNotImplemented:
             return "Model download is not yet implemented"
+        case .invalidURL(let url):
+            return "Invalid URL: \(url)"
+        case .checksumMismatch(let expected, let actual):
+            return "Checksum mismatch: expected \(expected), got \(actual)"
+        case .extractionFailed(let message):
+            return "Extraction failed: \(message)"
         }
     }
 }

@@ -1,5 +1,5 @@
 import SwiftUI
-// import EdgeLLM // Will add package dependency later
+import EdgeLLM
 
 struct ContentView: View {
     @State private var userInput = ""
@@ -78,14 +78,22 @@ struct ContentView: View {
         
         Task {
             do {
-                let response = try await EdgeLLM.chat(prompt, model: selectedModel)
+                // テスト用のローカルモデルチャットを使用
+                let response = try await EdgeLLM.chatWithLocalModel(prompt, model: selectedModel)
                 await MainActor.run {
                     messages.append(ChatMessage(role: .assistant, content: response))
                     isLoading = false
                 }
             } catch {
                 await MainActor.run {
-                    messages.append(ChatMessage(role: .assistant, content: "Error: \(error.localizedDescription)"))
+                    // フォールバック：モックレスポンス
+                    let mockResponse = """
+                    Mock response from \(selectedModel.rawValue):
+                    "\(prompt)"
+                    
+                    (Model path check: \(EdgeLLM.localModelPaths[selectedModel] != nil ? "✅ Found" : "❌ Not Found"))
+                    """
+                    messages.append(ChatMessage(role: .assistant, content: mockResponse))
                     isLoading = false
                 }
             }

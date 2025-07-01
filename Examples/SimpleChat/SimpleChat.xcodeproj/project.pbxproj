@@ -10,7 +10,6 @@
 		8B1234561234567890ABCDEF /* SimpleChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234551234567890ABCDEF /* SimpleChatApp.swift */; };
 		8B1234581234567890ABCDEF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234571234567890ABCDEF /* ContentView.swift */; };
 		8B12345A1234567890ABCDEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B1234591234567890ABCDEF /* Assets.xcassets */; };
-		8B1234641234567890ABCDEF /* MockEdgeLLM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234651234567890ABCDEF /* MockEdgeLLM.swift */; };
 		8B1234661234567890ABCDEF /* StreamingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234671234567890ABCDEF /* StreamingContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,7 +19,6 @@
 		8B1234571234567890ABCDEF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8B1234591234567890ABCDEF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B12345B1234567890ABCDEF /* SimpleChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimpleChat.entitlements; sourceTree = "<group>"; };
-		8B1234651234567890ABCDEF /* MockEdgeLLM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEdgeLLM.swift; sourceTree = "<group>"; };
 		8B1234671234567890ABCDEF /* StreamingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,7 +55,6 @@
 				8B1234551234567890ABCDEF /* SimpleChatApp.swift */,
 				8B1234571234567890ABCDEF /* ContentView.swift */,
 				8B1234671234567890ABCDEF /* StreamingContentView.swift */,
-				8B1234651234567890ABCDEF /* MockEdgeLLM.swift */,
 				8B1234591234567890ABCDEF /* Assets.xcassets */,
 				8B12345B1234567890ABCDEF /* SimpleChat.entitlements */,
 			);
@@ -139,7 +136,6 @@
 			files = (
 				8B1234581234567890ABCDEF /* ContentView.swift in Sources */,
 				8B1234661234567890ABCDEF /* StreamingContentView.swift in Sources */,
-				8B1234641234567890ABCDEF /* MockEdgeLLM.swift in Sources */,
 				8B1234561234567890ABCDEF /* SimpleChatApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
