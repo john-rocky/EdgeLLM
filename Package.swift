@@ -5,73 +5,20 @@ let package = Package(
     name: "EdgeLLM",
     platforms: [
         .iOS(.v14),
-        .macOS(.v13)
+        .macOS(.v13),
+        .visionOS(.v1)
     ],
     products: [
         .library(
             name: "EdgeLLM",
-            targets: ["EdgeLLM"]
-        ),
-        .plugin(
-            name: "EdgeLLMSetup",
-            targets: ["EdgeLLMSetupPlugin"]
-        )
-    ],
-    dependencies: [
-        .package(path: "../ios/MLCSwift")
-    ],
-    targets: [
-        .target(
-            name: "EdgeLLM",
-            dependencies: ["MLCSwift"],
-            path: "Sources/EdgeLLM",
-            resources: [
-                .process("Resources")
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx),
-                .unsafeFlags(["-enable-bare-slash-regex"])
-            ],
-            plugins: [
-                .plugin(name: "EdgeLLMSetupPlugin")
-            ]
-        ),
-        .testTarget(
-            name: "EdgeLLMTests",
-            dependencies: ["EdgeLLM"],
-            path: "Tests/EdgeLLMTests"
-        ),
-        .plugin(
-            name: "EdgeLLMSetupPlugin",
-            capability: .buildTool(),
-            path: "Plugins/EdgeLLMSetupPlugin"
-        )
-    ]
-)
-
-// ============================================
-// Binary Distribution Configuration (v0.2.0+)
-// ============================================
-// When releasing XCFramework version, replace above with:
-/*
-let package = Package(
-    name: "EdgeLLM",
-    platforms: [
-        .iOS(.v14),
-        .macOS(.v13)
-    ],
-    products: [
-        .library(
-            name: "EdgeLLM",
-            targets: ["EdgeLLM"]
+            targets: ["EdgeLLM-Complete"]
         ),
     ],
     targets: [
         .binaryTarget(
-            name: "EdgeLLM",
-            url: "https://github.com/yourusername/EdgeLLM/releases/download/v0.2.0/EdgeLLM.xcframework.zip",
-            checksum: "GENERATED_CHECKSUM_HERE"
+            name: "EdgeLLM-Complete",
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.1.1/EdgeLLM-Complete.zip",
+            checksum: "47f4ea10f42d870a7de2650012874a038f3d6cbb3feeb8249e0e22054be04d89"
         )
     ]
 )
-*/
