@@ -1,6 +1,5 @@
 import SwiftUI
-// Note: In a real app, import EdgeLLM package
-// import EdgeLLM
+import EdgeLLM
 
 struct ContentView: View {
     @State private var userInput = ""

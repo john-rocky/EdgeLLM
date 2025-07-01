@@ -18,7 +18,7 @@ let package = Package(
         .binaryTarget(
             name: "EdgeLLM-Complete",
             url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.1.1/EdgeLLM-Complete.zip",
-            checksum: "47f4ea10f42d870a7de2650012874a038f3d6cbb3feeb8249e0e22054be04d89"
+            checksum: "54fda4b9cf88bc044435afab82e55a6d194be5a59aa60820b8d20635dbe457d6"
         )
     ]
 )
