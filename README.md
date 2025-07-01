@@ -6,7 +6,7 @@ Run Large Language Models on iOS with **just one line of code**
 let response = try await EdgeLLM.chat("Hello, world!")
 ```
 
-> **Note**: EdgeLLM v0.1.0 is now available! This is an early release - feedback and contributions are welcome.
+> **Note**: EdgeLLM v0.1.1 is now available with complete C++ runtime! Models will be available for download soon.
 
 ## Quick Start
 
@@ -40,20 +40,22 @@ for try await token in EdgeLLM.stream("Tell me a joke") {
 In Xcode:
 
 1. File → Add Package Dependencies
-2. Enter URL: `https://github.com/john-rocky/EdgeLLM`
+2. Enter URL: `https://github.com/john-rocky/EdgeLLM` (use branch: `complete-package`)
 3. Select version and click "Add Package"
 
 Or add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/john-rocky/EdgeLLM", from: "0.1.0")
+    .package(url: "https://github.com/john-rocky/EdgeLLM", branch: "complete-package")
 ]
 ```
 
 ### Note on First Use
 
-Models are downloaded automatically when first used (1-2GB per model, WiFi recommended).
+Models will be downloaded automatically when first used (1-3GB per model, WiFi recommended).
+
+**Current Status**: The runtime framework is ready. Model hosting infrastructure is being set up. For testing, you can use the included mock implementation.
 
 ## Usage
 
@@ -108,9 +110,9 @@ await llm.reset()
 
 | Model | Size | Description | Download Size |
 |-------|------|-------------|---------------|
-| `.gemma2b` | 2B | Google Gemma - Lightweight & fast (Default) | ~1.3GB |
-| `.phi2` | 2.7B | Microsoft Phi-2 - Balanced performance | ~1.8GB |
-| `.llama3_8b` | 8B | Meta Llama 3 - Highest quality (needs more memory) | ~4.5GB |
+| `.qwen05b` | 0.5B | Qwen2 - Ultra lightweight & fast | ~1GB |
+| `.gemma2b` | 2B | Google Gemma 2 - Balanced performance (Default) | ~3GB |
+| `.phi3_mini` | 3.8B | Microsoft Phi-3.5 - High quality | ~3GB |
 
 Models are automatically downloaded from Hugging Face on first use.
 
@@ -139,10 +141,10 @@ Models are downloaded automatically on first run (WiFi recommended).
 
 ### Out of Memory
 
-Try a smaller model like `.gemma2b`:
+Try a smaller model like `.qwen05b`:
 
 ```swift
-let response = try await EdgeLLM.chat("Hello", model: .gemma2b)
+let response = try await EdgeLLM.chat("Hello", model: .qwen05b)
 ```
 
 ## License
