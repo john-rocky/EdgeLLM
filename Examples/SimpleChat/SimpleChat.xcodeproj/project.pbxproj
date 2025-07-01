@@ -81,7 +81,6 @@
 			);
 			name = SimpleChat;
 			packageProductDependencies = (
-				8B1234631234567890ABCDEF /* EdgeLLM */,
 			);
 			productName = SimpleChat;
 			productReference = 8B1234521234567890ABCDEF /* SimpleChat.app */;
@@ -112,7 +111,6 @@
 			);
 			mainGroup = 8B1234491234567890ABCDEF;
 			packageReferences = (
-				8B1234621234567890ABCDEF /* XCLocalSwiftPackageReference "../../EdgeLLM" */,
 			);
 			productRefGroup = 8B1234531234567890ABCDEF /* Products */;
 			projectDirPath = "";

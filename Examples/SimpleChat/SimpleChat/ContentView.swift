@@ -1,5 +1,5 @@
 import SwiftUI
-import EdgeLLM
+// import EdgeLLM // Using mock for now
 
 struct ContentView: View {
     @State private var userInput = ""
