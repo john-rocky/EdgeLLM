@@ -11,14 +11,25 @@ let package = Package(
     products: [
         .library(
             name: "EdgeLLM",
-            targets: ["EdgeLLM-Complete"]
+            targets: ["EdgeLLM"]
         ),
     ],
+    dependencies: [
+        .package(path: "../ios/MLCSwift")
+    ],
     targets: [
-        .binaryTarget(
-            name: "EdgeLLM-Complete",
-            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.1.1/EdgeLLM-Complete.zip",
-            checksum: "5ca47adabfdd1b1606516ed53f8dc97ff1c3dc356f8b75de21bb379d356d8a4a"
+        .target(
+            name: "EdgeLLM",
+            dependencies: [
+                .product(name: "MLCSwift", package: "MLCSwift")
+            ],
+            path: "Sources/EdgeLLM",
+            resources: [
+                .process("Resources")
+            ],
+            swiftSettings: [
+                .unsafeFlags(["-enable-bare-slash-regex"])
+            ]
         )
     ]
 )

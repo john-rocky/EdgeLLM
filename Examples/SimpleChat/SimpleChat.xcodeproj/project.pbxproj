@@ -350,20 +350,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		8B1234621234567890ABCDEF /* XCLocalSwiftPackageReference "../../EdgeLLM" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../EdgeLLM;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8B1234631234567890ABCDEF /* EdgeLLM */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = EdgeLLM;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B12344A1234567890ABCDEF /* Project object */;
 }
