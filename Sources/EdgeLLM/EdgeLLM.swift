@@ -191,6 +191,15 @@ public actor EdgeLLM {
     // MARK: - Private Methods
     
     private func ensureModelAvailable(_ model: Model) async throws -> String {
+        // 開発用：ローカルのmlc_llmキャッシュをチェック
+        #if DEBUG
+        let mlcCachePath = "/Users/majimadaisuke/.cache/mlc_llm/model_weights/hf/mlc-ai/\(model.rawValue)"
+        if FileManager.default.fileExists(atPath: mlcCachePath) {
+            logger.info("Using local MLC cache model at: \(mlcCachePath)")
+            return mlcCachePath
+        }
+        #endif
+        
         // バンドルモデルをチェック
         let bundleURL = Bundle.main.bundleURL.appendingPathComponent("bundle")
         let modelURL = bundleURL.appendingPathComponent(model.rawValue)
