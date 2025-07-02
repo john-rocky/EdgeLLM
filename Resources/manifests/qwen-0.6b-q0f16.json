@@ -1,0 +1,10 @@
+{
+  "modelId": "Qwen3-0.6B-q0f16-MLC",
+  "version": "2025-07-01",
+  "url": {
+    "default": "https://huggingface.co/mlc-ai/Qwen3-0.6B-q0f16-MLC/resolve/main/mlc-chat-config.json"
+  },
+  "sha256": "placeholder",
+  "sizeBytes": 1200000000,
+  "description": "Qwen3 0.6B model with q0f16 quantization, optimized for mobile devices"
+}

@@ -1,5 +1,6 @@
 import Foundation
 import os
+import MLCSwift
 
 /// EdgeLLM - シンプルなLLM APIライブラリ
 /// 
@@ -9,32 +10,32 @@ import os
 /// let response = try await llm.chat("Hello, world!")
 /// print(response)
 /// ```
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 14.0, macOS 13.0, *)
 public actor EdgeLLM {
     
     // MARK: - Public Types
     
     /// サポートされているモデル
     public enum Model: String, CaseIterable {
-        case qwen06b = "Qwen3-0.6B-q0f16-MLC"  // Qwen3 0.6B model (smaller)
+        case qwen05b = "Qwen2-0.5B-Instruct-q0f16-MLC"
         case gemma2b = "gemma-2-2b-it-q4f16_1-MLC"
         case phi3_mini = "Phi-3.5-mini-instruct-q4f16_1-MLC"
         
         var modelLib: String {
             switch self {
-            case .qwen06b:
-                return "qwen3_q0f16_e63d9b1954017ab989b2bde1896a12e2"  // Qwen3 0.6B full precision model with hash
+            case .qwen05b:
+                return "qwen2_q0f16"     // Qwen2 0.5B quantized model
             case .gemma2b:
-                return "gemma2_q4f16_1_779a95d4ef785ea159992d38fac2317f"  // Gemma 2B quantized model  
+                return "gemma2_q4f16_1"  // Gemma 2B quantized model
             case .phi3_mini:
-                return "phi3_q4f16_1_eba3d93dab5930b68f7296c1fd0d29ec"    // Phi-3.5 mini quantized model
+                return "phi3_q4f16_1"    // Phi-3.5 mini quantized model
             }
         }
         
         var displayName: String {
             switch self {
-            case .qwen06b:
-                return "Qwen 0.6B"
+            case .qwen05b:
+                return "Qwen 0.5B"
             case .gemma2b:
                 return "Gemma 2B"
             case .phi3_mini:
@@ -44,8 +45,8 @@ public actor EdgeLLM {
         
         var huggingFaceURL: String? {
             switch self {
-            case .qwen06b:
-                return "https://huggingface.co/mlc-ai/Qwen3-0.6B-q0f16-MLC"
+            case .qwen05b:
+                return "https://huggingface.co/mlc-ai/Qwen2-0.5B-Instruct-q0f16-MLC"
             case .gemma2b:
                 return "https://huggingface.co/mlc-ai/gemma-2-2b-it-q4f16_1-MLC"
             case .phi3_mini:
@@ -149,8 +150,8 @@ public actor EdgeLLM {
                         messages: request.messages,
                         model: request.model,
                         max_tokens: request.max_tokens,
-                        stream_options: StreamOptions(include_usage: true),
-                        temperature: request.temperature
+                        temperature: request.temperature,
+                        stream_options: StreamOptions(include_usage: true)
                     ) {
                         for choice in response.choices {
                             if let content = choice.delta.content {
@@ -192,17 +193,10 @@ public actor EdgeLLM {
     private func ensureModelAvailable(_ model: Model) async throws -> String {
         // 開発用：ローカルのmlc_llmキャッシュをチェック
         #if DEBUG
-        let localModelPaths: [Model: String] = [
-            .qwen06b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen3-0.6B-q0f16-MLC",
-            .gemma2b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/gemma-2-2b-it-q4f16_1-MLC",
-            .phi3_mini: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
-        ]
-        
-        if let mlcCachePath = localModelPaths[model] {
-            if FileManager.default.fileExists(atPath: mlcCachePath) {
-                logger.info("Using local MLC cache model at: \(mlcCachePath)")
-                return mlcCachePath
-            }
+        let mlcCachePath = "/Users/majimadaisuke/.cache/mlc_llm/model_weights/hf/mlc-ai/\(model.rawValue)"
+        if FileManager.default.fileExists(atPath: mlcCachePath) {
+            logger.info("Using local MLC cache model at: \(mlcCachePath)")
+            return mlcCachePath
         }
         #endif
         
@@ -253,17 +247,15 @@ public actor EdgeLLM {
             try? FileManager.default.removeItem(at: tempDir)
         }
         
-        // Download model files - dynamically detect which files exist
-        let baseFiles = [
+        // Download model files
+        let modelFiles = [
             "mlc-chat-config.json",
             "ndarray-cache.json",
+            "params_shard_0.bin",
             "tokenizer.json"
         ]
         
-        var downloadedFiles: [String] = []
-        
-        // First download required files
-        for file in baseFiles {
+        for file in modelFiles {
             let fileURL = URL(string: urlString)!.appendingPathComponent("resolve/main/\(file)")
             let tempFile = tempDir.appendingPathComponent(file)
             
@@ -273,137 +265,32 @@ public actor EdgeLLM {
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 200 else {
-                throw EdgeLLMError.downloadFailed("Failed to download required file: \(file)")
+                throw EdgeLLMError.downloadFailed("Failed to download \(file)")
             }
             
             try data.write(to: tempFile)
-            downloadedFiles.append(file)
         }
         
-        // Parse ndarray-cache.json to determine which shard files to download
-        let ndarrayPath = tempDir.appendingPathComponent("ndarray-cache.json")
-        let ndarrayData = try Data(contentsOf: ndarrayPath)
-        
-        guard let ndarrayJson = try JSONSerialization.jsonObject(with: ndarrayData) as? [String: Any] else {
-            logger.error("Failed to parse ndarray-cache.json as dictionary")
-            throw EdgeLLMError.downloadFailed("Invalid ndarray-cache.json format")
-        }
-        
-        var shardFiles = Set<String>()
-        
-        if let records = ndarrayJson["records"] as? [[String: Any]] {
-            logger.info("Found \(records.count) records in ndarray-cache.json")
-            for record in records {
-                if let dataPath = record["dataPath"] as? String {
-                    shardFiles.insert(dataPath)
-                }
-            }
-            logger.info("Extracted shard files: \(shardFiles.sorted())")
-        } else {
-            logger.warning("No records found in ndarray-cache.json")
-        }
-        
-        // If no shard files found in ndarray-cache, try common patterns
-        if shardFiles.isEmpty {
-            logger.info("No shard files found in ndarray-cache.json, trying common patterns")
-            
-            // Try single params.bin file
-            if let _ = try? await downloadOptionalFile(from: urlString, filename: "params.bin", to: tempDir) {
-                downloadedFiles.append("params.bin")
-            } else {
-                // Try numbered shards up to 50 (reasonable upper limit)
-                var shardIndex = 0
-                while shardIndex < 50 {
-                    let shardFile = "params_shard_\(shardIndex).bin"
-                    if let _ = try? await downloadOptionalFile(from: urlString, filename: shardFile, to: tempDir) {
-                        downloadedFiles.append(shardFile)
-                        shardIndex += 1
-                    } else {
-                        break
-                    }
-                }
-            }
-        } else {
-            // Download all shard files specified in ndarray-cache.json
-            logger.info("Found \(shardFiles.count) shard files to download")
-            
-            for shardFile in shardFiles.sorted() {
-                logger.info("Downloading: \(shardFile)")
-                
-                let fileURL = URL(string: urlString)!.appendingPathComponent("resolve/main/\(shardFile)")
-                let tempFile = tempDir.appendingPathComponent(shardFile)
-                
-                let (data, response) = try await URLSession.shared.data(from: fileURL)
-                
-                guard let httpResponse = response as? HTTPURLResponse,
-                      httpResponse.statusCode == 200 else {
-                    throw EdgeLLMError.downloadFailed("Failed to download shard file: \(shardFile)")
-                }
-                
-                try data.write(to: tempFile)
-                downloadedFiles.append(shardFile)
-            }
-        }
-        
-        guard downloadedFiles.count > baseFiles.count else {
-            throw EdgeLLMError.downloadFailed("No model weight files found")
-        }
-        
-        // Move all downloaded files to destination
+        // Move to destination
         try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
         
-        for file in downloadedFiles {
+        for file in modelFiles {
             let sourceFile = tempDir.appendingPathComponent(file)
             let destFile = destination.appendingPathComponent(file)
             try FileManager.default.moveItem(at: sourceFile, to: destFile)
         }
         
         logger.info("Model downloaded successfully to: \(destination.path)")
-        
-        // List all downloaded files for debugging
-        let downloadedItems = try FileManager.default.contentsOfDirectory(atPath: destination.path)
-        logger.info("Downloaded files (\(downloadedItems.count)): \(downloadedItems.sorted())")
-        
-        // Check for shard files
-        let downloadedShardFiles = downloadedItems.filter { $0.contains("params_shard") }
-        logger.info("Downloaded shard files (\(downloadedShardFiles.count)): \(downloadedShardFiles.sorted())")
-        
         return destination.path
-    }
-    
-    private func downloadOptionalFile(from baseURL: String, filename: String, to tempDir: URL) async throws -> Data? {
-        let fileURL = URL(string: baseURL)!.appendingPathComponent("resolve/main/\(filename)")
-        
-        do {
-            let (data, response) = try await URLSession.shared.data(from: fileURL)
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200 else {
-                return nil
-            }
-            
-            let tempFile = tempDir.appendingPathComponent(filename)
-            try data.write(to: tempFile)
-            return data
-        } catch {
-            // File doesn't exist or download failed - that's OK for optional files
-            return nil
-        }
     }
     
     private func loadModel(modelPath: String, modelLib: String) async throws {
         logger.info("Loading model from: \(modelPath)")
         
-        // Ensure model loading happens on main thread to avoid GPU background execution errors
-        await MainActor.run {
-            logger.info("Loading model on main thread")
-        }
-        
-        logger.info("Calling engine.reload with modelLib: \(modelLib)")
         await engine.reload(modelPath: modelPath, modelLib: modelLib)
         isLoaded = true
         
-        logger.info("Model loaded successfully with lib: \(modelLib)")
+        logger.info("Model loaded successfully")
     }
 }
 
@@ -437,7 +324,7 @@ extension EdgeLLM {
         options: Options = .default
     ) async throws -> AsyncThrowingStream<String, Error> {
         let llm = try await EdgeLLM(model: model, options: options)
-        return await llm.stream(prompt)
+        return llm.stream(prompt)
     }
 }
 
@@ -465,9 +352,6 @@ public enum EdgeLLMError: LocalizedError {
     case modelNotLoaded
     case downloadFailed(String)
     case downloadNotImplemented
-    case invalidURL(String)
-    case checksumMismatch(expected: String, actual: String)
-    case extractionFailed(String)
     
     public var errorDescription: String? {
         switch self {
@@ -479,12 +363,6 @@ public enum EdgeLLMError: LocalizedError {
             return "Model download failed: \(reason)"
         case .downloadNotImplemented:
             return "Model download is not yet implemented"
-        case .invalidURL(let url):
-            return "Invalid URL: \(url)"
-        case .checksumMismatch(let expected, let actual):
-            return "Checksum mismatch: expected \(expected), got \(actual)"
-        case .extractionFailed(let message):
-            return "Extraction failed: \(message)"
         }
     }
 }

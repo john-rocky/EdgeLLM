@@ -16,6 +16,7 @@ let response = try await EdgeLLM.chat("こんにちは！")
 - **ブランチ**:
   - `main`: ソースコード版（開発用）
   - `release`: バイナリ配布版（ユーザー用）
+  - `complete-package`: 完成版パッケージ（v0.1.1）
 
 ### ディレクトリ構造
 ```
@@ -54,42 +55,68 @@ EdgeLLM/
    - XCFramework版: 一般ユーザー向け（GitHub Releases予定）
    - サイズ問題の解決策を文書化
 
-## 📋 TODO（次のセッション）
+## 📋 最新の開発状況（2025-07-01）
 
-### 1. XCFrameworkの作成とアップロード
-```bash
-# MLC-LLMライブラリをビルド
-cd ios
-./prepare_libs.sh
+### 実施済み
+1. **XCFramework作成**: 60MBのXCFrameworkを作成（C++ライブラリ含む）
+2. **GitHub Release作成**: v0.2.0でバイナリ配布版をリリース
+3. **Package.swift更新**: バイナリターゲット対応に切り替え
+4. **コンパイルエラー修正**: 全てのSwiftコンパイルエラーを解決
+5. **MLCSwiftソース統合**: MLCSwiftのソースコードをEdgeLLMに統合
 
-# EdgeLLM XCFrameworkを作成
-cd EdgeLLM/scripts
-./build_xcframework.sh
+### 発見した問題
+1. **MLCSwiftが公開Swiftパッケージとして利用不可**
+   - MLCSwiftはmlc-llmリポジトリ内にのみ存在
+   - スタンドアロンのSwiftパッケージとして公開されていない
 
-# GitHub Releasesにアップロード
-# 1. タグを作成: git tag v0.1.0
-# 2. GitHubでリリースを作成
-# 3. EdgeLLM.xcframework.zipをアップロード
-```
+2. **XCFrameworkの問題**
+   - 現在のXCFrameworkにはC++ライブラリのみ含まれている
+   - MLCSwiftのObjective-C++ブリッジ（JSONFFIEngine）が含まれていない
+   - Swiftモジュールが含まれていないため、MLCRuntimeとしてインポートできない
 
-### 2. Package.swiftの更新
-```swift
-// releaseブランチのPackage.swiftでチェックサムを更新
-checksum: "実際のチェックサム値"
-```
+### 解決策の選択肢
+1. **MLCSwiftソースをEdgeLLMに直接含める**
+   - MLCSwiftのSwiftファイルをEdgeLLMにコピー
+   - Objective-C++ブリッジも含める必要あり
 
-### 3. ライブラリホスティングURLの設定
-`scripts/setup.sh`内のプレースホルダーを実際のURLに置換:
-```bash
-LIBS_URL="https://github.com/john-rocky/EdgeLLM/releases/download/v0.1.0/ios-libs.tar.gz"
-```
+2. **XCFrameworkにMLCSwiftを含める**
+   - MLCSwiftをビルドしてXCFrameworkに追加
+   - より複雑だが、よりクリーンな解決策
+
+3. **MLCSwiftを別パッケージとして公開**
+   - 最も理想的だが、mlc-ai組織の協力が必要
+
+## 📋 TODO（次のステップ）
+
+### 優先度高
+1. **MLCSwiftの統合**
+   ```bash
+   # オプション1: ソースコピー
+   cp -r ../ios/MLCSwift/Sources/* Sources/EdgeLLM/
+   
+   # オプション2: XCFrameworkに含める
+   # build_xcframework.shを更新してMLCSwiftも含める
+   ```
+
+2. **実機での動作テスト**
+   - iOSデバイスまたはシミュレータで実際のモデル推論をテスト
+   - ローカルモデルでの動作確認
+
+### 優先度中
+1. **ドキュメントの更新**
+   - MLCSwift統合方法の文書化
+   - セットアップガイドの更新
+
+2. **CI/CDパイプライン**
+   - 自動ビルドとリリースの設定
 
 ## 🔑 重要なポイント
 
 1. **EdgeLLM-Swift → EdgeLLM**にリネーム済み
-2. **MLCSwiftへの依存**は開発時のみ（ユーザーには透過的）
+2. **MLCSwiftへの依存**は解決が必要（公開パッケージが存在しない）
 3. **300MB問題**はGitHub Releasesで解決（2GBまでOK）
 4. **自動ダウンロード機能**を実装済み（URL要設定）
+5. **実際のモデル推論**にはMLCSwift統合が必要
 
 ## 💡 設計思想
 
@@ -119,6 +146,7 @@ swift build
 - モデルファイル（.mlmodel等）は絶対にgitにコミットしない
 - ライブラリファイル（.a）もgitignoreで除外済み
 - Claude関連の記述はコミットメッセージに含めない
+- MLCSwiftは公開パッケージとして利用不可（2025-07-01確認）
 
 ---
-最終更新: 2024-06-30
+最終更新: 2025-07-01

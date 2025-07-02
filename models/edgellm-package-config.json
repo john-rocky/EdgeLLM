@@ -1,0 +1,15 @@
+{
+    "device": "iphone",
+    "model_list": [
+        {
+            "model": "HF://mlc-ai/Qwen2-0.5B-Instruct-q0f16-MLC",
+            "model_id": "Qwen2-0.5B-Instruct-q0f16-MLC",
+            "estimated_vram_bytes": 1000000000,
+            "model_lib": "qwen2_q0f16",
+            "overrides": {
+                "context_window_size": 2048,
+                "prefill_chunk_size": 128
+            }
+        }
+    ]
+}

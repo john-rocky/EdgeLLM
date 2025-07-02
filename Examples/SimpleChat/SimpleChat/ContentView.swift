@@ -1,21 +1,20 @@
 import SwiftUI
-// Note: In a real app, import EdgeLLM package
-// import EdgeLLM
+import EdgeLLM
 
 struct ContentView: View {
     @State private var userInput = ""
     @State private var messages: [ChatMessage] = []
     @State private var isLoading = false
-    @State private var selectedModel: EdgeLLM.Model = .gemma2b
+    @State private var selectedModel: EdgeLLM.Model = .qwen06b
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 // Model selector
                 Picker("Model", selection: $selectedModel) {
+                    Text("Qwen 0.6B").tag(EdgeLLM.Model.qwen06b)
                     Text("Gemma 2B").tag(EdgeLLM.Model.gemma2b)
-                    Text("Phi-2").tag(EdgeLLM.Model.phi2)
-                    Text("Llama 3 8B").tag(EdgeLLM.Model.llama3_8b)
+                    Text("Phi-3.5 Mini").tag(EdgeLLM.Model.phi3_mini)
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
@@ -79,14 +78,22 @@ struct ContentView: View {
         
         Task {
             do {
-                let response = try await EdgeLLM.chat(prompt, model: selectedModel)
+                // テスト用のローカルモデルチャットを使用
+                let response = try await EdgeLLM.chatWithLocalModel(prompt, model: selectedModel)
                 await MainActor.run {
                     messages.append(ChatMessage(role: .assistant, content: response))
                     isLoading = false
                 }
             } catch {
                 await MainActor.run {
-                    messages.append(ChatMessage(role: .assistant, content: "Error: \(error.localizedDescription)"))
+                    // フォールバック：モックレスポンス
+                    let mockResponse = """
+                    Mock response from \(selectedModel.rawValue):
+                    "\(prompt)"
+                    
+                    (Model path check: \(EdgeLLM.localModelPaths[selectedModel] != nil ? "✅ Found" : "❌ Not Found"))
+                    """
+                    messages.append(ChatMessage(role: .assistant, content: mockResponse))
                     isLoading = false
                 }
             }

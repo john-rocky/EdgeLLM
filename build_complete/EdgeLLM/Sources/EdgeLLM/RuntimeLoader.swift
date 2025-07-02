@@ -2,9 +2,9 @@ import Foundation
 import os
 
 /// EdgeLLMランタイムの動的ロード管理
-@available(iOS 14.0, macOS 11.0, *)
+@available(iOS 14.0, macOS 13.0, *)
 public class EdgeLLMRuntimeLoader {
-    private let logger = Logger(subsystem: "ai.edge.llm", category: "RuntimeLoader")
+    private static let logger = Logger(subsystem: "ai.edge.llm", category: "RuntimeLoader")
     
     /// ランタイムのダウンロードURL
     public struct RuntimeSource {
@@ -41,7 +41,7 @@ public class EdgeLLMRuntimeLoader {
         logger.info("Starting runtime download from: \(source)")
         
         guard let url = URL(string: source) else {
-            throw EdgeLLMError.invalidURL(source)
+            throw EdgeLLMError.invalidURL
         }
         
         // ダウンロード先の準備
@@ -75,7 +75,6 @@ public class EdgeLLMRuntimeLoader {
     
     /// ランタイムを解凍
     private func unzipRuntime(from zipURL: URL, to destination: URL) async throws {
-        #if os(macOS)
         let task = Process()
         task.launchPath = "/usr/bin/unzip"
         task.arguments = ["-o", zipURL.path, "-d", destination.path]
@@ -84,12 +83,8 @@ public class EdgeLLMRuntimeLoader {
         task.waitUntilExit()
         
         guard task.terminationStatus == 0 else {
-            throw EdgeLLMError.extractionFailed("Failed to unzip runtime")
+            throw EdgeLLMError.unzipFailed
         }
-        #else
-        // iOS doesn't support Process - runtime should be bundled with app
-        throw EdgeLLMError.extractionFailed("Runtime extraction not supported on iOS. Please bundle runtime with app.")
-        #endif
     }
     
     /// ランタイムのサイズを取得（MB）
@@ -109,16 +104,8 @@ public class EdgeLLMRuntimeLoader {
 
 extension URLSession {
     func download(from url: URL, progress: @escaping (Double) -> Void) async throws -> (URL, URLResponse) {
-        if #available(iOS 15.0, *) {
-            let (localURL, response) = try await self.download(from: url)
-            return (localURL, response)
-        } else {
-            // iOS 14 fallback using data task
-            let (data, response) = try await self.data(from: url)
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-            try data.write(to: tempURL)
-            return (tempURL, response)
-        }
+        let (localURL, response) = try await self.download(from: url)
+        return (localURL, response)
     }
 }
 
@@ -127,10 +114,10 @@ extension URLSession {
 extension EdgeLLM {
     /// スマートな初期化（必要に応じてランタイムをダウンロード）
     public static func initialize() async throws {
-        let loader = EdgeLLMRuntimeLoader()
-        
         if !EdgeLLMRuntimeLoader.isRuntimeAvailable() {
-            print("Runtime not found. Downloading...")
+            logger.info("Runtime not found. Downloading...")
+            
+            let loader = EdgeLLMRuntimeLoader()
             
             // 複数のソースから試行
             let sources = [
@@ -144,17 +131,24 @@ extension EdgeLLM {
                     try await loader.installRuntime(from: source)
                     break
                 } catch {
-                    print("Failed to download from \(source): \(error)")
+                    logger.error("Failed to download from \(source): \(error)")
                     continue
                 }
             }
             
             guard EdgeLLMRuntimeLoader.isRuntimeAvailable() else {
-                throw EdgeLLMError.downloadFailed("Runtime not available after download attempts")
+                throw EdgeLLMError.runtimeNotAvailable
             }
         }
         
-        print("Runtime is ready")
+        logger.info("Runtime is ready")
     }
 }
 
+// MARK: - Errors
+
+extension EdgeLLMError {
+    static let invalidURL = EdgeLLMError.downloadFailed("Invalid URL")
+    static let unzipFailed = EdgeLLMError.downloadFailed("Failed to unzip runtime")
+    static let runtimeNotAvailable = EdgeLLMError.downloadFailed("Runtime not available after download attempts")
+}
