@@ -33,7 +33,16 @@ Package.resolved
 *.framework
 *.xcframework
 dist/
+dist_*/
 BinaryTargets/
+XCFrameworks/
+
+# Test projects and build artifacts
+TestApp/
+TestReal/
+SimpleTest/
+Examples/SimpleChat_New/
+Examples/TestSimpleChat/
 
 # Temporary files
 *.log
