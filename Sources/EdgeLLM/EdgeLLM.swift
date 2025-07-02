@@ -192,10 +192,17 @@ public actor EdgeLLM {
     private func ensureModelAvailable(_ model: Model) async throws -> String {
         // 開発用：ローカルのmlc_llmキャッシュをチェック
         #if DEBUG
-        let mlcCachePath = "/Users/majimadaisuke/.cache/mlc_llm/model_weights/hf/mlc-ai/\(model.rawValue)"
-        if FileManager.default.fileExists(atPath: mlcCachePath) {
-            logger.info("Using local MLC cache model at: \(mlcCachePath)")
-            return mlcCachePath
+        let localModelPaths: [Model: String] = [
+            .qwen05b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen3-0.6B-q0f16-MLC",
+            .gemma2b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/gemma-2-2b-it-q4f16_1-MLC",
+            .phi3_mini: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
+        ]
+        
+        if let mlcCachePath = localModelPaths[model] {
+            if FileManager.default.fileExists(atPath: mlcCachePath) {
+                logger.info("Using local MLC cache model at: \(mlcCachePath)")
+                return mlcCachePath
+            }
         }
         #endif
         
