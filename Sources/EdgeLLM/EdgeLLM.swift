@@ -23,11 +23,11 @@ public actor EdgeLLM {
         var modelLib: String {
             switch self {
             case .qwen05b:
-                return "qwen2_q0f16"     // Qwen2 0.5B quantized model
+                return "qwen3_q0f16_e63d9b1954017ab989b2bde1896a12e2"     // Qwen3 0.5B quantized model
             case .gemma2b:
-                return "gemma2_q4f16_1"  // Gemma 2B quantized model
+                return "gemma2_q4f16_1_779a95d4ef785ea159992d38fac2317f"  // Gemma 2B quantized model
             case .phi3_mini:
-                return "phi3_q4f16_1"    // Phi-3.5 mini quantized model
+                return "phi3_q4f16_1_eba3d93dab5930b68f7296c1fd0d29ec"    // Phi-3.5 mini quantized model
             }
         }
         
