@@ -1,20 +1,28 @@
 import SwiftUI
-// Note: In a real app, import EdgeLLM package
-// import EdgeLLM
+import EdgeLLM
 
 // Alternative view with streaming support
 struct StreamingContentView: View {
     @State private var userInput = ""
     @State private var currentResponse = ""
     @State private var isStreaming = false
+    @State private var llm: EdgeLLM?
+    @State private var errorMessage = ""
     
     var body: some View {
         VStack {
             // Response area
             ScrollView {
-                Text(currentResponse.isEmpty ? "Ask me anything!" : currentResponse)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    Text(currentResponse.isEmpty ? "Ask me anything!" : currentResponse)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             
             Divider()
@@ -35,6 +43,15 @@ struct StreamingContentView: View {
             .padding()
         }
         .navigationTitle("EdgeLLM Stream")
+        .onAppear {
+            Task {
+                do {
+                    llm = try await EdgeLLM(model: .qwen05b)
+                } catch {
+                    errorMessage = "Failed to initialize: \(error.localizedDescription)"
+                }
+            }
+        }
     }
     
     func streamResponse() {
@@ -45,7 +62,10 @@ struct StreamingContentView: View {
         
         Task {
             do {
-                for try await token in EdgeLLM.stream(prompt) {
+                guard let llm = llm else {
+                    throw EdgeLLMError.modelNotLoaded
+                }
+                for try await token in llm.stream(prompt) {
                     await MainActor.run {
                         currentResponse += token
                     }
