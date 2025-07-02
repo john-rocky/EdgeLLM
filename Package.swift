@@ -27,6 +27,9 @@ let package = Package(
             path: "Sources/EdgeLLM",
             swiftSettings: [
                 .unsafeFlags(["-enable-bare-slash-regex"])
+            ],
+            linkerSettings: [
+                .unsafeFlags(["-Wl,-all_load"])
             ]
         )
     ]
