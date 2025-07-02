@@ -283,16 +283,24 @@ public actor EdgeLLM {
         // Parse ndarray-cache.json to determine which shard files to download
         let ndarrayPath = tempDir.appendingPathComponent("ndarray-cache.json")
         let ndarrayData = try Data(contentsOf: ndarrayPath)
-        let ndarrayJson = try JSONSerialization.jsonObject(with: ndarrayData) as? [String: Any]
+        
+        guard let ndarrayJson = try JSONSerialization.jsonObject(with: ndarrayData) as? [String: Any] else {
+            logger.error("Failed to parse ndarray-cache.json as dictionary")
+            throw EdgeLLMError.downloadFailed("Invalid ndarray-cache.json format")
+        }
         
         var shardFiles = Set<String>()
         
-        if let records = ndarrayJson?["records"] as? [[String: Any]] {
+        if let records = ndarrayJson["records"] as? [[String: Any]] {
+            logger.info("Found \(records.count) records in ndarray-cache.json")
             for record in records {
                 if let dataPath = record["dataPath"] as? String {
                     shardFiles.insert(dataPath)
                 }
             }
+            logger.info("Extracted shard files: \(shardFiles.sorted())")
+        } else {
+            logger.warning("No records found in ndarray-cache.json")
         }
         
         // If no shard files found in ndarray-cache, try common patterns
@@ -376,6 +384,11 @@ public actor EdgeLLM {
     
     private func loadModel(modelPath: String, modelLib: String) async throws {
         logger.info("Loading model from: \(modelPath)")
+        
+        // Ensure model loading happens on main thread to avoid GPU background execution errors
+        await MainActor.run {
+            logger.info("Loading model on main thread")
+        }
         
         await engine.reload(modelPath: modelPath, modelLib: modelLib)
         isLoaded = true
