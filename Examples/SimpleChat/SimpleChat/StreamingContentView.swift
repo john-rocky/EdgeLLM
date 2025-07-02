@@ -46,7 +46,7 @@ struct StreamingContentView: View {
         .onAppear {
             Task {
                 do {
-                    llm = try await EdgeLLM(model: .qwen05b)
+                    llm = try await EdgeLLM(model: .qwen06b)
                 } catch {
                     errorMessage = "Failed to initialize: \(error.localizedDescription)"
                 }
