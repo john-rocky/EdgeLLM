@@ -174,6 +174,7 @@ public struct ModelDownloader {
         try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
         
         // Use system commands to extract
+        #if os(macOS)
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/bin/tar")
         task.arguments = ["-xf", source.path, "-C", destination.path]
@@ -184,6 +185,10 @@ public struct ModelDownloader {
         guard task.terminationStatus == 0 else {
             throw EdgeLLMError.extractionFailed("tar extraction failed")
         }
+        #else
+        // iOS doesn't have Process API
+        throw EdgeLLMError.extractionFailed("Archive extraction not implemented for iOS")
+        #endif
     }
 }
 

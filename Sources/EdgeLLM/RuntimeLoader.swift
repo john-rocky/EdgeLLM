@@ -75,6 +75,7 @@ public class EdgeLLMRuntimeLoader {
     
     /// ランタイムを解凍
     private func unzipRuntime(from zipURL: URL, to destination: URL) async throws {
+        #if os(macOS)
         let task = Process()
         task.launchPath = "/usr/bin/unzip"
         task.arguments = ["-o", zipURL.path, "-d", destination.path]
@@ -85,6 +86,10 @@ public class EdgeLLMRuntimeLoader {
         guard task.terminationStatus == 0 else {
             throw EdgeLLMError.extractionFailed("Failed to unzip runtime")
         }
+        #else
+        // iOS doesn't support Process - runtime should be bundled with app
+        throw EdgeLLMError.extractionFailed("Runtime extraction not supported on iOS. Please bundle runtime with app.")
+        #endif
     }
     
     /// ランタイムのサイズを取得（MB）
@@ -104,8 +109,16 @@ public class EdgeLLMRuntimeLoader {
 
 extension URLSession {
     func download(from url: URL, progress: @escaping (Double) -> Void) async throws -> (URL, URLResponse) {
-        let (localURL, response) = try await self.download(from: url)
-        return (localURL, response)
+        if #available(iOS 15.0, *) {
+            let (localURL, response) = try await self.download(from: url)
+            return (localURL, response)
+        } else {
+            // iOS 14 fallback using data task
+            let (data, response) = try await self.data(from: url)
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            try data.write(to: tempURL)
+            return (tempURL, response)
+        }
     }
 }
 
