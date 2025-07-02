@@ -5,41 +5,8 @@ let package = Package(
     name: "EdgeLLM",
     platforms: [
         .iOS(.v14),
-        .macOS(.v13)
-    ],
-    products: [
-        .library(
-            name: "EdgeLLM",
-            targets: ["EdgeLLM"]
-        )
-    ],
-    dependencies: [
-    ],
-    targets: [
-        .target(
-            name: "EdgeLLM",
-            dependencies: [],
-            path: "Sources/EdgeLLM",
-            resources: [
-                .process("Resources")
-            ],
-            swiftSettings: [
-                .unsafeFlags(["-enable-bare-slash-regex"])
-            ]
-        )
-    ]
-)
-
-// ============================================
-// Binary Distribution Configuration (v0.2.0+)
-// ============================================
-// When releasing XCFramework version, replace above with:
-/*
-let package = Package(
-    name: "EdgeLLM",
-    platforms: [
-        .iOS(.v14),
-        .macOS(.v13)
+        .macOS(.v14),
+        .visionOS(.v1)
     ],
     products: [
         .library(
@@ -47,12 +14,20 @@ let package = Package(
             targets: ["EdgeLLM"]
         ),
     ],
+    dependencies: [],
     targets: [
         .binaryTarget(
+            name: "MLCRuntime",
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.4.0/MLCRuntime.xcframework.zip",
+            checksum: "3fc79c1d2c4a31f717dd943ec8b492183661c8e93c073c37c03dae1cefb89c66"
+        ),
+        .target(
             name: "EdgeLLM",
-            url: "https://github.com/yourusername/EdgeLLM/releases/download/v0.2.0/EdgeLLM.xcframework.zip",
-            checksum: "GENERATED_CHECKSUM_HERE"
+            dependencies: ["MLCRuntime"],
+            path: "Sources/EdgeLLM",
+            swiftSettings: [
+                .unsafeFlags(["-enable-bare-slash-regex"])
+            ]
         )
     ]
 )
-*/
