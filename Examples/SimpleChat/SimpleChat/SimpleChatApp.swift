@@ -3,10 +3,8 @@ import SwiftUI
 @main
 struct SimpleChatApp: App {
     init() {
-        // Note: In a production app, we would need to properly initialize MLC-LLM
-        // The current XCFramework is missing the json_ffi_engine initialization
-        print("⚠️ Warning: MLC-LLM initialization incomplete in current XCFramework")
-        print("💡 To fix: Use MLCChat's library configuration or rebuild XCFramework with json_ffi_engine.cc")
+        // MLC-LLM is now properly initialized in the XCFramework
+        print("🚀 SimpleChat starting with EdgeLLM...")
     }
     
     var body: some Scene {
