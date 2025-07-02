@@ -16,18 +16,18 @@ public actor EdgeLLM {
     
     /// サポートされているモデル
     public enum Model: String, CaseIterable {
-        case qwen05b = "Qwen3-0.6B-q0f16-MLC"  // Changed to match the actual model
+        case qwen05b = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC"  // Updated to smaller model with fewer shards
         case gemma2b = "gemma-2-2b-it-q4f16_1-MLC"
         case phi3_mini = "Phi-3.5-mini-instruct-q4f16_1-MLC"
         
         var modelLib: String {
             switch self {
             case .qwen05b:
-                return "qwen3_q0f16_e63d9b1954017ab989b2bde1896a12e2"     // Qwen3 0.5B quantized model
+                return "qwen2_q4f16_1"     // Qwen2.5 0.5B quantized model
             case .gemma2b:
-                return "gemma2_q4f16_1_779a95d4ef785ea159992d38fac2317f"  // Gemma 2B quantized model
+                return "gemma2_q4f16_1"    // Gemma 2B quantized model  
             case .phi3_mini:
-                return "phi3_q4f16_1_eba3d93dab5930b68f7296c1fd0d29ec"    // Phi-3.5 mini quantized model
+                return "phi3_q4f16_1"      // Phi-3.5 mini quantized model
             }
         }
         
@@ -45,7 +45,7 @@ public actor EdgeLLM {
         var huggingFaceURL: String? {
             switch self {
             case .qwen05b:
-                return "https://huggingface.co/mlc-ai/Qwen3-0.6B-q0f16-MLC"
+                return "https://huggingface.co/mlc-ai/Qwen2.5-0.5B-Instruct-q4f16_1-MLC"
             case .gemma2b:
                 return "https://huggingface.co/mlc-ai/gemma-2-2b-it-q4f16_1-MLC"
             case .phi3_mini:
@@ -193,7 +193,7 @@ public actor EdgeLLM {
         // 開発用：ローカルのmlc_llmキャッシュをチェック
         #if DEBUG
         let localModelPaths: [Model: String] = [
-            .qwen05b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen3-0.6B-q0f16-MLC",
+            .qwen05b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
             .gemma2b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/gemma-2-2b-it-q4f16_1-MLC",
             .phi3_mini: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
         ]
@@ -359,6 +359,15 @@ public actor EdgeLLM {
         }
         
         logger.info("Model downloaded successfully to: \(destination.path)")
+        
+        // List all downloaded files for debugging
+        let downloadedItems = try FileManager.default.contentsOfDirectory(atPath: destination.path)
+        logger.info("Downloaded files (\(downloadedItems.count)): \(downloadedItems.sorted())")
+        
+        // Check for shard files
+        let shardFiles = downloadedItems.filter { $0.contains("params_shard") }
+        logger.info("Downloaded shard files (\(shardFiles.count)): \(shardFiles.sorted())")
+        
         return destination.path
     }
     
