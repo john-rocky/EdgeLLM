@@ -9,6 +9,16 @@ import os
 /// let response = try await llm.chat("Hello, world!")
 /// print(response)
 /// ```
+// Force static library initialization at import time
+@available(iOS 14.0, macOS 11.0, *)
+public enum EdgeLLMRuntime {
+    static let forceInit: Void = {
+        // Initialize MLCEngine to ensure all symbols are loaded
+        _ = MLCEngine()
+        return ()
+    }()
+}
+
 @available(iOS 14.0, macOS 11.0, *)
 public actor EdgeLLM {
     
@@ -92,6 +102,9 @@ public actor EdgeLLM {
     ///   - model: 使用するモデル
     ///   - options: 生成オプション
     public init(model: Model, options: Options = .default) async throws {
+        // Ensure runtime is initialized
+        _ = EdgeLLMRuntime.forceInit
+        
         self.model = model
         self.options = options
         
@@ -421,6 +434,9 @@ extension EdgeLLM {
         model: Model = .gemma2b,
         options: Options = .default
     ) async throws -> String {
+        // Ensure runtime is initialized
+        _ = EdgeLLMRuntime.forceInit
+        
         let llm = try await EdgeLLM(model: model, options: options)
         return try await llm.chat(prompt)
     }
@@ -436,6 +452,9 @@ extension EdgeLLM {
         model: Model = .gemma2b,
         options: Options = .default
     ) async throws -> AsyncThrowingStream<String, Error> {
+        // Ensure runtime is initialized
+        _ = EdgeLLMRuntime.forceInit
+        
         let llm = try await EdgeLLM(model: model, options: options)
         return await llm.stream(prompt)
     }
