@@ -18,8 +18,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "MLCRuntime",
-            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.3.0/MLCRuntime.xcframework.zip",
-            checksum: "ccbf13400898c99eaddbb9b82eac0174747fc462a8f6a020a838d919f6d04514"
+            url: "https://github.com/john-rocky/EdgeLLM/releases/download/v0.4.0/MLCRuntime.xcframework.zip",
+            checksum: "3fc79c1d2c4a31f717dd943ec8b492183661c8e93c073c37c03dae1cefb89c66"
         ),
         .target(
             name: "EdgeLLM",
