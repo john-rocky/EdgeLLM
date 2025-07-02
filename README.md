@@ -1,28 +1,33 @@
 # EdgeLLM
 
-Run Large Language Models on iOS with **just one line of code**
+Run Large Language Models on iOS devices with **just one line of code**
 
 ```swift
 let response = try await EdgeLLM.chat("Hello, world!")
 ```
 
-> **Note**: EdgeLLM v0.1.1 is now available with complete C++ runtime! Models will be available for download soon.
+> **Note**: EdgeLLM is now fully functional! Supports multiple models including Qwen, Gemma, and Phi-3.
 
 ## Quick Start
 
 ```swift
 import EdgeLLM
 
-// 1. Basic chat
+// 1. Basic chat (uses default model)
 let response = try await EdgeLLM.chat("Hello!")
+print(response)
 
-// 2. Choose a model
-let response = try await EdgeLLM.chat("Hello!", model: .llama3_8b)
+// 2. Choose a specific model
+let response = try await EdgeLLM.chat("Hello!", model: .gemma2b)
 
-// 3. Stream tokens
+// 3. Stream responses in real-time
 for try await token in EdgeLLM.stream("Tell me a joke") {
     print(token, terminator: "")
 }
+
+// 4. Advanced usage with custom instance
+let llm = try await EdgeLLM(model: .qwen06b)
+let response = try await llm.chat("Explain quantum computing")
 ```
 
 ## Features
@@ -51,11 +56,13 @@ dependencies: [
 ]
 ```
 
-### Note on First Use
+## Supported Models
 
-Models will be downloaded automatically when first used (1-3GB per model, WiFi recommended).
+- **Qwen 0.6B** (`.qwen06b`) - Smallest, fastest model (~1.2GB)
+- **Gemma 2B** (`.gemma2b`) - Balanced performance (~2.5GB)  
+- **Phi-3.5 Mini** (`.phi3_mini`) - Most capable (~3.8GB)
 
-**Current Status**: The runtime framework is ready. Model hosting infrastructure is being set up. For testing, you can use the included mock implementation.
+Models are automatically downloaded on first use (WiFi recommended).
 
 ## Usage
 
@@ -84,7 +91,7 @@ for try await token in EdgeLLM.stream("Tell me a story") {
 // Specify model and options
 let response = try await EdgeLLM.chat(
     "Technical question",
-    model: .llama3_8b,  // Use different model
+    model: .gemma2b,  // Use different model
     options: EdgeLLM.Options(
         temperature: 0.3,  // More deterministic
         maxTokens: 500
@@ -106,32 +113,29 @@ let response2 = try await llm.chat("What's my name?")
 await llm.reset()
 ```
 
-## Supported Models
-
-| Model | Size | Description | Download Size |
-|-------|------|-------------|---------------|
-| `.qwen05b` | 0.5B | Qwen2 - Ultra lightweight & fast | ~1GB |
-| `.gemma2b` | 2B | Google Gemma 2 - Balanced performance (Default) | ~3GB |
-| `.phi3_mini` | 3.8B | Microsoft Phi-3.5 - High quality | ~3GB |
-
-Models are automatically downloaded from Hugging Face on first use.
 
 ## Example App
 
-A sample SwiftUI app is available in the `Examples/SimpleChat` directory.
+Check out the complete example app in `Examples/SimpleChat`:
+
+```bash
+cd Examples/SimpleChat
+open SimpleChat.xcodeproj
+```
 
 ## Requirements
 
 - iOS 14.0+
-- iPhone 12 or later (with Neural Engine)
 - Xcode 15.0+
+- 4GB+ free storage for models
+- Recommended: iPhone 12 or newer (Neural Engine support)
 
 ## Performance
 
 On iPhone 15 Pro:
 - Initial load: 2-3 seconds
-- Token generation: 10-15 tokens/sec (Gemma 2B)
-- Memory usage: 2-4GB depending on model
+- Token generation: 10-30 tokens/sec (model dependent)
+- Memory usage: 1-4GB depending on model
 
 ## Troubleshooting
 
