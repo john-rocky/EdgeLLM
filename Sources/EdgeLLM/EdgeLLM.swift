@@ -365,8 +365,8 @@ public actor EdgeLLM {
         logger.info("Downloaded files (\(downloadedItems.count)): \(downloadedItems.sorted())")
         
         // Check for shard files
-        let shardFiles = downloadedItems.filter { $0.contains("params_shard") }
-        logger.info("Downloaded shard files (\(shardFiles.count)): \(shardFiles.sorted())")
+        let downloadedShardFiles = downloadedItems.filter { $0.contains("params_shard") }
+        logger.info("Downloaded shard files (\(downloadedShardFiles.count)): \(downloadedShardFiles.sorted())")
         
         return destination.path
     }
