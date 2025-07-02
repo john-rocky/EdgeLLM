@@ -253,15 +253,17 @@ public actor EdgeLLM {
             try? FileManager.default.removeItem(at: tempDir)
         }
         
-        // Download model files
-        let modelFiles = [
+        // Download model files - dynamically detect which files exist
+        let requiredFiles = [
             "mlc-chat-config.json",
             "ndarray-cache.json",
-            "params_shard_0.bin",
             "tokenizer.json"
         ]
         
-        for file in modelFiles {
+        var downloadedFiles: [String] = []
+        
+        // First download required files
+        for file in requiredFiles {
             let fileURL = URL(string: urlString)!.appendingPathComponent("resolve/main/\(file)")
             let tempFile = tempDir.appendingPathComponent(file)
             
@@ -271,16 +273,62 @@ public actor EdgeLLM {
             
             guard let httpResponse = response as? HTTPURLResponse,
                   httpResponse.statusCode == 200 else {
-                throw EdgeLLMError.downloadFailed("Failed to download \(file)")
+                throw EdgeLLMError.downloadFailed("Failed to download required file: \(file)")
             }
             
             try data.write(to: tempFile)
+            downloadedFiles.append(file)
         }
         
-        // Move to destination
+        // Now download model weight files - check for different patterns
+        var foundWeights = false
+        
+        // Pattern 1: Single params.bin file
+        let singleParamsFile = "params.bin"
+        if let data = try? await downloadOptionalFile(from: urlString, filename: singleParamsFile, to: tempDir) {
+            logger.info("Found single params file")
+            downloadedFiles.append(singleParamsFile)
+            foundWeights = true
+        }
+        
+        // Pattern 2: Sharded params files (params_shard_0.bin, params_shard_1.bin, etc.)
+        if !foundWeights {
+            var shardIndex = 0
+            while shardIndex < 10 { // Reasonable upper limit
+                let shardFile = "params_shard_\(shardIndex).bin"
+                if let data = try? await downloadOptionalFile(from: urlString, filename: shardFile, to: tempDir) {
+                    logger.info("Found shard file: \(shardFile)")
+                    downloadedFiles.append(shardFile)
+                    foundWeights = true
+                    shardIndex += 1
+                } else {
+                    // No more shards available
+                    break
+                }
+            }
+        }
+        
+        // Pattern 3: Alternative naming (model.bin, pytorch_model.bin, etc.)
+        if !foundWeights {
+            let alternativeNames = ["model.bin", "pytorch_model.bin", "model_weights.bin"]
+            for altName in alternativeNames {
+                if let data = try? await downloadOptionalFile(from: urlString, filename: altName, to: tempDir) {
+                    logger.info("Found model file: \(altName)")
+                    downloadedFiles.append(altName)
+                    foundWeights = true
+                    break
+                }
+            }
+        }
+        
+        guard foundWeights else {
+            throw EdgeLLMError.downloadFailed("No model weight files found in repository")
+        }
+        
+        // Move all downloaded files to destination
         try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
         
-        for file in modelFiles {
+        for file in downloadedFiles {
             let sourceFile = tempDir.appendingPathComponent(file)
             let destFile = destination.appendingPathComponent(file)
             try FileManager.default.moveItem(at: sourceFile, to: destFile)
@@ -288,6 +336,26 @@ public actor EdgeLLM {
         
         logger.info("Model downloaded successfully to: \(destination.path)")
         return destination.path
+    }
+    
+    private func downloadOptionalFile(from baseURL: String, filename: String, to tempDir: URL) async throws -> Data? {
+        let fileURL = URL(string: baseURL)!.appendingPathComponent("resolve/main/\(filename)")
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(from: fileURL)
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                return nil
+            }
+            
+            let tempFile = tempDir.appendingPathComponent(filename)
+            try data.write(to: tempFile)
+            return data
+        } catch {
+            // File doesn't exist or download failed - that's OK for optional files
+            return nil
+        }
     }
     
     private func loadModel(modelPath: String, modelLib: String) async throws {
