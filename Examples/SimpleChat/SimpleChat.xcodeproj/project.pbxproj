@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7318420B2E14AE2400D269A5 /* EdgeLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 7318420A2E14AE2400D269A5 /* EdgeLLM */; };
 		8B1234561234567890ABCDEF /* SimpleChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234551234567890ABCDEF /* SimpleChatApp.swift */; };
 		8B1234581234567890ABCDEF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1234571234567890ABCDEF /* ContentView.swift */; };
 		8B12345A1234567890ABCDEF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B1234591234567890ABCDEF /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7318420B2E14AE2400D269A5 /* EdgeLLM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +80,7 @@
 			);
 			name = SimpleChat;
 			packageProductDependencies = (
+				7318420A2E14AE2400D269A5 /* EdgeLLM */,
 			);
 			productName = SimpleChat;
 			productReference = 8B1234521234567890ABCDEF /* SimpleChat.app */;
@@ -108,6 +111,7 @@
 			);
 			mainGroup = 8B1234491234567890ABCDEF;
 			packageReferences = (
+				731842092E14AE2400D269A5 /* XCLocalSwiftPackageReference "../../../EdgeLLM" */,
 			);
 			productRefGroup = 8B1234531234567890ABCDEF /* Products */;
 			projectDirPath = "";
@@ -346,6 +350,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		731842092E14AE2400D269A5 /* XCLocalSwiftPackageReference "../../../EdgeLLM" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../EdgeLLM;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7318420A2E14AE2400D269A5 /* EdgeLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EdgeLLM;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B12344A1234567890ABCDEF /* Project object */;
 }
