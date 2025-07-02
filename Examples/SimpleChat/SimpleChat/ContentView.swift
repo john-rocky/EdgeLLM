@@ -5,14 +5,14 @@ struct ContentView: View {
     @State private var userInput = ""
     @State private var messages: [ChatMessage] = []
     @State private var isLoading = false
-    @State private var selectedModel: EdgeLLM.Model = .qwen05b
+    @State private var selectedModel: EdgeLLM.Model = .qwen06b
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 // Model selector
                 Picker("Model", selection: $selectedModel) {
-                    Text("Qwen 0.5B").tag(EdgeLLM.Model.qwen05b)
+                    Text("Qwen 0.6B").tag(EdgeLLM.Model.qwen06b)
                     Text("Gemma 2B").tag(EdgeLLM.Model.gemma2b)
                     Text("Phi-3.5 Mini").tag(EdgeLLM.Model.phi3_mini)
                 }
