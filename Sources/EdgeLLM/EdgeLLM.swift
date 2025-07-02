@@ -16,7 +16,7 @@ public actor EdgeLLM {
     
     /// サポートされているモデル
     public enum Model: String, CaseIterable {
-        case qwen05b = "Qwen2-0.5B-Instruct-q0f16-MLC"
+        case qwen05b = "Qwen3-0.6B-q0f16-MLC"  // Changed to match the actual model
         case gemma2b = "gemma-2-2b-it-q4f16_1-MLC"
         case phi3_mini = "Phi-3.5-mini-instruct-q4f16_1-MLC"
         
@@ -45,7 +45,7 @@ public actor EdgeLLM {
         var huggingFaceURL: String? {
             switch self {
             case .qwen05b:
-                return "https://huggingface.co/mlc-ai/Qwen2-0.5B-Instruct-q0f16-MLC"
+                return "https://huggingface.co/mlc-ai/Qwen3-0.6B-q0f16-MLC"
             case .gemma2b:
                 return "https://huggingface.co/mlc-ai/gemma-2-2b-it-q4f16_1-MLC"
             case .phi3_mini:
