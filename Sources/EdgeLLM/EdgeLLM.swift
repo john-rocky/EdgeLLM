@@ -399,10 +399,11 @@ public actor EdgeLLM {
             logger.info("Loading model on main thread")
         }
         
+        logger.info("Calling engine.reload with modelLib: \(modelLib)")
         await engine.reload(modelPath: modelPath, modelLib: modelLib)
         isLoaded = true
         
-        logger.info("Model loaded successfully")
+        logger.info("Model loaded successfully with lib: \(modelLib)")
     }
 }
 
