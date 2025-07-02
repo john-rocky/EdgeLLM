@@ -212,6 +212,7 @@ public class MLCEngine {
     // But to be safe and consistent with chat.completions.create
     // and for future API changes we keep them as async calls
     public func reload(modelPath: String, modelLib: String) async {
+        await state.logger.info("MLCEngine.reload called with modelPath: \(modelPath), modelLib: \(modelLib)")
         let engineConfig = """
         {
             "model": "\(modelPath)",
@@ -220,6 +221,7 @@ public class MLCEngine {
         }
         """
         jsonFFIEngine.reload(engineConfig)
+        await state.logger.info("MLCEngine.reload completed")
     }
 
     public func reset() async {
