@@ -254,7 +254,7 @@ public actor EdgeLLM {
         }
         
         // Download model files - dynamically detect which files exist
-        let requiredFiles = [
+        let baseFiles = [
             "mlc-chat-config.json",
             "ndarray-cache.json",
             "tokenizer.json"
@@ -263,7 +263,7 @@ public actor EdgeLLM {
         var downloadedFiles: [String] = []
         
         // First download required files
-        for file in requiredFiles {
+        for file in baseFiles {
             let fileURL = URL(string: urlString)!.appendingPathComponent("resolve/main/\(file)")
             let tempFile = tempDir.appendingPathComponent(file)
             
@@ -280,49 +280,65 @@ public actor EdgeLLM {
             downloadedFiles.append(file)
         }
         
-        // Now download model weight files - check for different patterns
-        var foundWeights = false
+        // Parse ndarray-cache.json to determine which shard files to download
+        let ndarrayPath = tempDir.appendingPathComponent("ndarray-cache.json")
+        let ndarrayData = try Data(contentsOf: ndarrayPath)
+        let ndarrayJson = try JSONSerialization.jsonObject(with: ndarrayData) as? [String: Any]
         
-        // Pattern 1: Single params.bin file
-        let singleParamsFile = "params.bin"
-        if let data = try? await downloadOptionalFile(from: urlString, filename: singleParamsFile, to: tempDir) {
-            logger.info("Found single params file")
-            downloadedFiles.append(singleParamsFile)
-            foundWeights = true
-        }
+        var shardFiles = Set<String>()
         
-        // Pattern 2: Sharded params files (params_shard_0.bin, params_shard_1.bin, etc.)
-        if !foundWeights {
-            var shardIndex = 0
-            while shardIndex < 10 { // Reasonable upper limit
-                let shardFile = "params_shard_\(shardIndex).bin"
-                if let data = try? await downloadOptionalFile(from: urlString, filename: shardFile, to: tempDir) {
-                    logger.info("Found shard file: \(shardFile)")
-                    downloadedFiles.append(shardFile)
-                    foundWeights = true
-                    shardIndex += 1
-                } else {
-                    // No more shards available
-                    break
+        if let records = ndarrayJson?["records"] as? [[String: Any]] {
+            for record in records {
+                if let dataPath = record["dataPath"] as? String {
+                    shardFiles.insert(dataPath)
                 }
             }
         }
         
-        // Pattern 3: Alternative naming (model.bin, pytorch_model.bin, etc.)
-        if !foundWeights {
-            let alternativeNames = ["model.bin", "pytorch_model.bin", "model_weights.bin"]
-            for altName in alternativeNames {
-                if let data = try? await downloadOptionalFile(from: urlString, filename: altName, to: tempDir) {
-                    logger.info("Found model file: \(altName)")
-                    downloadedFiles.append(altName)
-                    foundWeights = true
-                    break
+        // If no shard files found in ndarray-cache, try common patterns
+        if shardFiles.isEmpty {
+            logger.info("No shard files found in ndarray-cache.json, trying common patterns")
+            
+            // Try single params.bin file
+            if let _ = try? await downloadOptionalFile(from: urlString, filename: "params.bin", to: tempDir) {
+                downloadedFiles.append("params.bin")
+            } else {
+                // Try numbered shards up to 50 (reasonable upper limit)
+                var shardIndex = 0
+                while shardIndex < 50 {
+                    let shardFile = "params_shard_\(shardIndex).bin"
+                    if let _ = try? await downloadOptionalFile(from: urlString, filename: shardFile, to: tempDir) {
+                        downloadedFiles.append(shardFile)
+                        shardIndex += 1
+                    } else {
+                        break
+                    }
                 }
+            }
+        } else {
+            // Download all shard files specified in ndarray-cache.json
+            logger.info("Found \(shardFiles.count) shard files to download")
+            
+            for shardFile in shardFiles.sorted() {
+                logger.info("Downloading: \(shardFile)")
+                
+                let fileURL = URL(string: urlString)!.appendingPathComponent("resolve/main/\(shardFile)")
+                let tempFile = tempDir.appendingPathComponent(shardFile)
+                
+                let (data, response) = try await URLSession.shared.data(from: fileURL)
+                
+                guard let httpResponse = response as? HTTPURLResponse,
+                      httpResponse.statusCode == 200 else {
+                    throw EdgeLLMError.downloadFailed("Failed to download shard file: \(shardFile)")
+                }
+                
+                try data.write(to: tempFile)
+                downloadedFiles.append(shardFile)
             }
         }
         
-        guard foundWeights else {
-            throw EdgeLLMError.downloadFailed("No model weight files found in repository")
+        guard downloadedFiles.count > baseFiles.count else {
+            throw EdgeLLMError.downloadFailed("No model weight files found")
         }
         
         // Move all downloaded files to destination
