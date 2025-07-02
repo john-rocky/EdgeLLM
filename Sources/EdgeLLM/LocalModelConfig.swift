@@ -7,7 +7,7 @@ public extension EdgeLLM {
     
     /// ローカルのキャッシュされたモデルパス
     static let localModelPaths: [Model: String] = [
-        .qwen05b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen3-0.6B-q0f16-MLC",
+        .qwen06b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Qwen3-0.6B-q0f16-MLC",
         .gemma2b: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/gemma-2-2b-it-q4f16_1-MLC",
         .phi3_mini: "/Users/agmajima/.cache/mlc_llm/model_weights/hf/mlc-ai/Phi-3.5-mini-instruct-q4f16_1-MLC"
     ]
@@ -15,7 +15,7 @@ public extension EdgeLLM {
     /// ローカルモデルを使用してチャット（テスト用）
     static func chatWithLocalModel(
         _ prompt: String,
-        model: Model = .qwen05b,
+        model: Model = .qwen06b,
         options: Options = .default
     ) async throws -> String {
         // 一時的にローカルパスを使用
