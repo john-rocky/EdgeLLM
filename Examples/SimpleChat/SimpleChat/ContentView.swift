@@ -78,22 +78,17 @@ struct ContentView: View {
         
         Task {
             do {
-                // テスト用のローカルモデルチャットを使用
-                let response = try await EdgeLLM.chatWithLocalModel(prompt, model: selectedModel)
+                // Use the correct EdgeLLM API
+                let response = try await EdgeLLM.chat(prompt, model: selectedModel)
                 await MainActor.run {
                     messages.append(ChatMessage(role: .assistant, content: response))
                     isLoading = false
                 }
             } catch {
                 await MainActor.run {
-                    // フォールバック：モックレスポンス
-                    let mockResponse = """
-                    Mock response from \(selectedModel.rawValue):
-                    "\(prompt)"
-                    
-                    (Model path check: \(EdgeLLM.localModelPaths[selectedModel] != nil ? "✅ Found" : "❌ Not Found"))
-                    """
-                    messages.append(ChatMessage(role: .assistant, content: mockResponse))
+                    // Show error message
+                    let errorMessage = "Error: \(error.localizedDescription)"
+                    messages.append(ChatMessage(role: .assistant, content: errorMessage))
                     isLoading = false
                 }
             }
