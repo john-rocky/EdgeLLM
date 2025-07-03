@@ -124,14 +124,26 @@ await llm.reset()
 ```
 
 
-## Example App
+## Example Apps
 
-Check out the complete example app in `Examples/SimpleChat`:
-
+### Simple Chat
+Basic chat interface in `Examples/SimpleChat`:
 ```bash
 cd Examples/SimpleChat
 open SimpleChat.xcodeproj
 ```
+
+### Streaming Chat with Performance Metrics
+Advanced demo with real-time streaming and performance monitoring:
+```bash
+cd Examples/StreamingChat
+open StreamingChat.xcodeproj
+```
+
+Features:
+- Real-time token streaming
+- Live performance metrics (tokens/sec, latency)
+- Model comparison (Qwen3, Gemma, Phi-3.5)
 
 ## Requirements
 
