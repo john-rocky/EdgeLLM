@@ -4,83 +4,192 @@
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](LICENSE)
 [![Release](https://img.shields.io/github/v/tag/john-rocky/EdgeLLM)](https://github.com/john-rocky/EdgeLLM/releases)
 
-**EdgeLLM** is a Swift Package that currently ships with **three pre‑compiled models**  
-(~300 MB XCFramework) so you can run LLMs offline on iOS / macOS *without any extra download*.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c7a7a5bf-b226-405e-86ce-ea3dc19e0d15" alt="EdgeLLM" width="800"/>
+</p>
 
-> A lightweight 10 MB runtime + on‑demand weights is on our roadmap.  
-> For now we prioritise *“it just works”* over minimal binary size.
+<h1 align="center">EdgeLLM</h1>
 
----
-
-## 🚀 One‑Line Installation
+<p align="center">Run Large Language Models on iOS devices with <strong>just one line of code</strong></p>
 
 ```swift
-// Package.swift
-.package(url: "https://github.com/john-rocky/EdgeLLM", from: "0.1.1")
+let response = try await EdgeLLM.chat("Hello, world!")
 ```
 
-*First `swift build` fetches the 300 MB package; subsequent builds are cached.*
+> **Note**: EdgeLLM is now fully functional! Supports multiple models including Qwen, Gemma, and Phi-3.
 
----
-
-## ⚡ 5‑Line Quick Start
+## Quick Start
 
 ```swift
 import EdgeLLM
-let llm   = try EdgeLLM(modelId: "qwen-0.6b_q0")
-let reply = try await llm.chat("Hello!")
-print(reply)
+
+// 1. Basic chat (uses default model)
+let response = try await EdgeLLM.chat("Hello!")
+print(response)
+
+// 2. Choose a specific model
+let response = try await EdgeLLM.chat("Hello!", model: .gemma2b)
+
+// 3. Stream responses in real-time
+for try await token in EdgeLLM.stream("Tell me a joke") {
+    print(token, terminator: "")
+}
+
+// 4. Advanced usage with custom instance
+let llm = try await EdgeLLM(model: .qwen06b)
+let response = try await llm.chat("Explain quantum computing")
 ```
 
-Because the models are bundled, **no runtime download** is needed.  
-Works entirely offline—even in Airplane Mode.
+## Features
 
----
+- 🚀 **Dead Simple** - Chat with LLMs in one line
+- 📱 **iOS Optimized** - Metal GPU acceleration for blazing speed
+- 🔒 **Privacy First** - Everything runs on-device
+- 📦 **Easy Install** - Swift Package Manager ready
+- 🌊 **Streaming Support** - Real-time responses
 
-## 📚 Bundled Models
+## Installation
 
-| ID | Params | Languages | Suggested RAM | Typical Use |
-|----|--------|-----------|--------------|-------------|
-| `qwen-0.6b_q0`    | 0.6 B | EN · JA · ZH | ≥ 4 GB | lightweight chat, summaries |
-| `gemma-2b_q4`     | 2 B   | EN          | ≥ 4 GB | Q&A, code completion |
-| `phi-3.5-mini_q4` | 3.5 B | Multi       | ≥ 6 GB | multilingual chat, translation |
+### Swift Package Manager
 
-*More models coming—see roadmap.*
+In Xcode:
 
----
+1. File → Add Package Dependencies
+2. Enter URL: `https://github.com/john-rocky/EdgeLLM`
+3. Select version and click "Add Package"
 
-## ✨ Features
+Or add to your `Package.swift`:
 
-* **Offline by default** – all weights in the app bundle  
-* **Metal‑accelerated** – ≈ 15 tok/s on iPhone 15 Pro (Phi‑3.5 Mini int4)  
-* **BYOM** – side‑load any `.tar.zst` via `EdgeLLM.registerLocalModel()`  
-* **Apache‑2.0** – business‑friendly licence  
+```swift
+dependencies: [
+    .package(url: "https://github.com/john-rocky/EdgeLLM", from: "1.0.0")
+]
+```
 
----
+## Supported Models
 
-## 🗺 Roadmap
+- **Qwen 0.6B** (`.qwen06b`) - Smallest, fastest model (~1.2GB)
+- **Gemma 2B** (`.gemma2b`) - Balanced performance (~2.5GB)  
+- **Phi-3.5 Mini** (`.phi3_mini`) - Most capable (~3.8GB)
 
-| Milestone | ETA |
-|-----------|-----|
-| 10 MB runtime + on‑demand weights | Q3 2025 |
-| Android / Vulkan build | Q3 2025 |
-| High‑perf 7 B kernels (plugin) | Planned |
-| WebAssembly demo | Research |
+Models are automatically downloaded on first use (WiFi recommended).
 
----
+## Usage
 
-## 💬 Community
+### Simplest Example
 
-* **Discord** – <https://discord.gg/edgellm>  
-* **GitHub Discussions** – open a topic under *Q&A*.
+```swift
+import EdgeLLM
 
----
+// Chat in one line!
+let response = try await EdgeLLM.chat("What's the weather like?")
+print(response)
+```
 
-## 🔒 License
+### Streaming Responses
 
-Apache‑2.0 — see `LICENSE`.  
-Portions derived from MLC‑LLM (Apache‑2.0); see `LICENSE-THIRD-PARTY.txt`.
+```swift
+// Receive response token by token
+for try await token in EdgeLLM.stream("Tell me a story") {
+    print(token, terminator: "")
+}
+```
 
----
+### Customization
 
-*Generated 2025-07-03*
+```swift
+// Specify model and options
+let response = try await EdgeLLM.chat(
+    "Technical question",
+    model: .gemma2b,  // Use different model
+    options: EdgeLLM.Options(
+        temperature: 0.3,  // More deterministic
+        maxTokens: 500
+    )
+)
+```
+
+### Advanced Usage
+
+```swift
+// Keep LLM instance for conversations
+let llm = try await EdgeLLM(model: .gemma2b)
+
+// Multiple exchanges
+let response1 = try await llm.chat("My name is John")
+let response2 = try await llm.chat("What's my name?")
+
+// Reset conversation
+await llm.reset()
+```
+
+
+## Example App
+
+Check out the complete example app in `Examples/SimpleChat`:
+
+```bash
+cd Examples/SimpleChat
+open SimpleChat.xcodeproj
+```
+
+## Requirements
+
+- iOS 14.0+
+- Xcode 15.0+
+- 4GB+ free storage for models
+- Recommended: iPhone 12 or newer (Neural Engine support)
+
+## Performance
+
+On iPhone 15 Pro:
+- Initial load: 2-3 seconds
+- Token generation: 10-30 tokens/sec (model dependent)
+- Memory usage: 1-4GB depending on model
+
+## Troubleshooting
+
+### Model Not Found
+
+Models are downloaded automatically on first run (WiFi recommended).
+
+### Out of Memory
+
+Try a smaller model like `.qwen06b`:
+
+```swift
+let response = try await EdgeLLM.chat("Hello", model: .qwen06b)
+```
+
+## License
+
+Apache2.0 License
+
+## Contributing
+
+Pull requests are welcome!
+
+### Development Setup
+
+1. Clone the repository
+2. Set up git hooks to prevent large files:
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+
+### Important: Large Files Policy
+
+- **Never commit binary files** (`.xcframework`, `.zip`, `.mlmodel`, etc.)
+- **Maximum file size**: 10MB
+- Large files should be uploaded to GitHub Releases
+- The pre-commit hook will block commits with large files
+
+## Links
+
+- [Documentation](https://github.com/john-rocky/EdgeLLM/tree/main/docs)
+- [Example App](https://github.com/john-rocky/EdgeLLM/tree/main/Examples/SimpleChat)
+- [Report Issues](https://github.com/john-rocky/EdgeLLM/issues)
+
+## Credits
+
+EdgeLLM is built on top of the [MLC-LLM](https://github.com/mlc-ai/mlc-llm) project.
