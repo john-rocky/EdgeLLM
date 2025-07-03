@@ -1,6 +1,10 @@
-# EdgeLLM
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c7a7a5bf-b226-405e-86ce-ea3dc19e0d15" alt="EdgeLLM" width="800"/>
+</p>
 
-Run Large Language Models on iOS devices with **just one line of code**
+<h1 align="center">EdgeLLM</h1>
+
+<p align="center">Run Large Language Models on iOS devices with <strong>just one line of code</strong></p>
 
 ```swift
 let response = try await EdgeLLM.chat("Hello, world!")
@@ -45,14 +49,14 @@ let response = try await llm.chat("Explain quantum computing")
 In Xcode:
 
 1. File → Add Package Dependencies
-2. Enter URL: `https://github.com/john-rocky/EdgeLLM` (use branch: `complete-package`)
+2. Enter URL: `https://github.com/john-rocky/EdgeLLM`
 3. Select version and click "Add Package"
 
 Or add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/john-rocky/EdgeLLM", branch: "complete-package")
+    .package(url: "https://github.com/john-rocky/EdgeLLM", from: "1.0.0")
 ]
 ```
 
@@ -145,10 +149,10 @@ Models are downloaded automatically on first run (WiFi recommended).
 
 ### Out of Memory
 
-Try a smaller model like `.qwen05b`:
+Try a smaller model like `.qwen06b`:
 
 ```swift
-let response = try await EdgeLLM.chat("Hello", model: .qwen05b)
+let response = try await EdgeLLM.chat("Hello", model: .qwen06b)
 ```
 
 ## License
