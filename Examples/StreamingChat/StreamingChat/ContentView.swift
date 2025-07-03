@@ -146,12 +146,14 @@ struct ContentView: View {
                 await loadModel()
             }
         }
-        .alert("Error", isPresented: $showError) {
-            Button("OK") {
-                errorMessage = ""
-            }
-        } message: {
-            Text(errorMessage)
+        .alert(isPresented: $showError) {
+            Alert(
+                title: Text("Error"),
+                message: Text(errorMessage),
+                dismissButton: .default(Text("OK")) {
+                    errorMessage = ""
+                }
+            )
         }
     }
     
