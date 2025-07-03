@@ -1,0 +1,42 @@
+name: Check File Size
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-file-size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check for large files
+        run: |
+          MAX_SIZE_MB=10
+          MAX_SIZE=$((MAX_SIZE_MB * 1024 * 1024))
+          
+          # Get all files in the PR
+          FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          
+          LARGE_FILES=""
+          for file in $FILES; do
+            if [ -f "$file" ]; then
+              size=$(wc -c < "$file")
+              if [ $size -gt $MAX_SIZE ]; then
+                size_mb=$((size / 1024 / 1024))
+                LARGE_FILES="$LARGE_FILES\n- $file (${size_mb}MB)"
+              fi
+            fi
+          done
+          
+          if [ -n "$LARGE_FILES" ]; then
+            echo "❌ Large files detected (>${MAX_SIZE_MB}MB):"
+            echo -e "$LARGE_FILES"
+            echo ""
+            echo "Please upload large files to GitHub Releases instead."
+            exit 1
+          fi
+          
+          echo "✅ No large files detected"

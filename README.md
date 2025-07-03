@@ -163,6 +163,21 @@ MIT License
 
 Pull requests are welcome!
 
+### Development Setup
+
+1. Clone the repository
+2. Set up git hooks to prevent large files:
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+
+### Important: Large Files Policy
+
+- **Never commit binary files** (`.xcframework`, `.zip`, `.mlmodel`, etc.)
+- **Maximum file size**: 10MB
+- Large files should be uploaded to GitHub Releases
+- The pre-commit hook will block commits with large files
+
 ## Links
 
 - [Documentation](https://github.com/john-rocky/EdgeLLM/tree/main/docs)

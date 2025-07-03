@@ -37,6 +37,29 @@ dist_*/
 BinaryTargets/
 XCFrameworks/
 
+# Large files
+*.zip
+*.tar
+*.tar.gz
+*.tar.zst
+*.dmg
+*.pkg
+*.mlmodel
+*.tflite
+*.onnx
+*.bin
+*.weights
+
+# Build artifacts
+build_*/
+*.dSYM/
+
+# Model files
+models/
+*.mlpackage/
+params_shard_*.bin
+ndarray-cache.json
+
 # Test projects and build artifacts
 TestApp/
 TestReal/

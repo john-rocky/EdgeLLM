@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Maximum file size in MB
+MAX_SIZE_MB=10
+
+# Maximum file size in bytes
+MAX_SIZE=$((MAX_SIZE_MB * 1024 * 1024))
+
+# Check for large files
+large_files=""
+for file in $(git diff --cached --name-only); do
+    if [ -f "$file" ]; then
+        size=$(wc -c < "$file")
+        if [ $size -gt $MAX_SIZE ]; then
+            size_mb=$((size / 1024 / 1024))
+            large_files="$large_files\n  - $file (${size_mb}MB)"
+        fi
+    fi
+done
+
+if [ -n "$large_files" ]; then
+    echo "❌ Commit blocked: Files larger than ${MAX_SIZE_MB}MB detected:"
+    echo -e "$large_files"
+    echo ""
+    echo "Large files should be distributed via GitHub Releases, not committed to the repository."
+    echo "To bypass this check (not recommended), use: git commit --no-verify"
+    exit 1
+fi
+
+# Check for binary files that shouldn't be committed
+binary_patterns=(
+    "*.xcframework"
+    "*.framework"
+    "*.a"
+    "*.zip"
+    "*.tar"
+    "*.tar.gz"
+    "*.tar.zst"
+    "*.mlmodel"
+    "*.tflite"
+    "*.bin"
+    "*.weights"
+)
+
+blocked_files=""
+for pattern in "${binary_patterns[@]}"; do
+    for file in $(git diff --cached --name-only | grep -E "${pattern//\*/.*}$"); do
+        blocked_files="$blocked_files\n  - $file"
+    done
+done
+
+if [ -n "$blocked_files" ]; then
+    echo "❌ Commit blocked: Binary files detected:"
+    echo -e "$blocked_files"
+    echo ""
+    echo "Binary files should be distributed via GitHub Releases, not committed to the repository."
+    echo "To bypass this check (not recommended), use: git commit --no-verify"
+    exit 1
+fi
+
+exit 0
