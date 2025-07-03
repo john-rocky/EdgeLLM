@@ -115,12 +115,11 @@ struct ContentView: View {
                 
                 // Input area
                 HStack(spacing: 12) {
-                    TextField("Ask me anything...", text: $userInput)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .disabled(isStreaming || llm == nil)
-                        .onSubmit {
-                            sendMessage()
-                        }
+                    TextField("Ask me anything...", text: $userInput, onCommit: {
+                        sendMessage()
+                    })
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disabled(isStreaming || llm == nil)
                     
                     Button(action: sendMessage) {
                         Image(systemName: "arrow.up.circle.fill")
