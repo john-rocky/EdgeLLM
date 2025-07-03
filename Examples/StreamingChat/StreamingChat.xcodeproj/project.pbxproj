@@ -10,6 +10,7 @@
 		3B4D5A2A2B5C6D7E00123456 /* StreamingChatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D5A292B5C6D7E00123456 /* StreamingChatApp.swift */; };
 		3B4D5A2C2B5C6D7E00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D5A2B2B5C6D7E00123456 /* ContentView.swift */; };
 		3B4D5A2E2B5C6D8000123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B4D5A2D2B5C6D8000123456 /* Assets.xcassets */; };
+		731842322E17376300D269A5 /* EdgeLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 731842312E17376300D269A5 /* EdgeLLM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				731842322E17376300D269A5 /* EdgeLLM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +79,7 @@
 			);
 			name = StreamingChat;
 			packageProductDependencies = (
+				731842312E17376300D269A5 /* EdgeLLM */,
 			);
 			productName = StreamingChat;
 			productReference = 3B4D5A262B5C6D7E00123456 /* StreamingChat.app */;
@@ -107,6 +110,7 @@
 			);
 			mainGroup = 3B4D5A1D2B5C6D7E00123456;
 			packageReferences = (
+				731842302E17376300D269A5 /* XCRemoteSwiftPackageReference "EdgeLLM" */,
 			);
 			productRefGroup = 3B4D5A272B5C6D7E00123456 /* Products */;
 			projectDirPath = "";
@@ -269,10 +273,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = UFUKVC4NJ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StreamingChat/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -283,7 +287,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.StreamingChat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daisuke.mlc.MLCChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -300,10 +304,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = UFUKVC4NJ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StreamingChat/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -314,7 +318,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.StreamingChat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daisuke.mlc.MLCChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -344,6 +348,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		731842302E17376300D269A5 /* XCRemoteSwiftPackageReference "EdgeLLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/john-rocky/EdgeLLM.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		731842312E17376300D269A5 /* EdgeLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 731842302E17376300D269A5 /* XCRemoteSwiftPackageReference "EdgeLLM" */;
+			productName = EdgeLLM;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3B4D5A1E2B5C6D7E00123456 /* Project object */;
 }

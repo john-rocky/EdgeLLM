@@ -133,14 +133,12 @@ struct ContentView: View {
             }
             .navigationTitle("EdgeLLM Streaming")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: clearChat) {
-                        Image(systemName: "trash")
-                    }
-                    .disabled(messages.isEmpty)
+            .navigationBarItems(trailing: 
+                Button(action: clearChat) {
+                    Image(systemName: "trash")
                 }
-            }
+                .disabled(messages.isEmpty)
+            )
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
