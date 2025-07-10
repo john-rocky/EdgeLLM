@@ -109,6 +109,14 @@ struct ContentView: View {
                             proxy.scrollTo(messages.last?.id, anchor: .bottom)
                         }
                     }
+                    .onChange(of: messages.last?.content ?? "") { _ in
+                        // Auto-scroll during streaming
+                        if isStreaming {
+                            withAnimation {
+                                proxy.scrollTo(messages.last?.id, anchor: .bottom)
+                            }
+                        }
+                    }
                 }
                 
                 Divider()
@@ -162,6 +170,12 @@ struct ContentView: View {
     
     private func loadModel() async {
         let loadStart = Date()
+        
+        // Unload previous model if exists
+        if let currentLLM = llm {
+            await currentLLM.unload()
+            llm = nil
+        }
         
         do {
             llm = try await EdgeLLM(model: selectedModel)
