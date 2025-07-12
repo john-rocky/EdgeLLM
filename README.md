@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/v/tag/john-rocky/EdgeLLM)](https://github.com/john-rocky/EdgeLLM/releases)
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c7a7a5bf-b226-405e-86ce-ea3dc19e0d15" alt="EdgeLLM" width="800"/>
+  <img src="https://github.com/user-attachments/assets/c7a7a5bf-b226-405e-86ce-ea3dc19e0d15" alt="EdgeLLM" width="350"/>
 </p>
 
 <h1 align="center">EdgeLLM</h1>
@@ -39,6 +39,8 @@ for try await token in EdgeLLM.stream("Tell me a joke") {
 let llm = try await EdgeLLM(model: .qwen06b)
 let response = try await llm.chat("Explain quantum computing")
 ```
+
+<img src="https://private-user-images.githubusercontent.com/23278992/465536477-97910a07-5361-42c3-9b12-43e72b8b8ef0.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTIyODg1ODUsIm5iZiI6MTc1MjI4ODI4NSwicGF0aCI6Ii8yMzI3ODk5Mi80NjU1MzY0NzctOTc5MTBhMDctNTM2MS00MmMzLTliMTItNDNlNzJiOGI4ZWYwLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA3MTIlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNzEyVDAyNDQ0NVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWM3YTYyMTEwMDI2ZWM2YzBhN2U3NTMyMzE4NDliMTVkZTdmNDhlYzk1M2MzODA3NjE5MDczNmIzMDYwZmU2NmEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.zijTI4a0j75K6aHZOZkQhKUGcm1vwI94b3SYFm4Ua6I" width="500" alt="demo"><sub><i>▲ Fictional penguin article summarised offline.</i></sub>
 
 ## Features
 
