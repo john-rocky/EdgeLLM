@@ -163,7 +163,7 @@ public actor EdgeLLM {
 
     private let engine = MLCEngine()
     private let model: Model
-    private let options: Options
+    private var options: Options
     private var isLoaded = false
     private let logger = Logger(subsystem: "ai.edge.llm", category: "EdgeLLM")
 
@@ -307,6 +307,11 @@ public actor EdgeLLM {
                 }
             }
         }
+    }
+
+    /// Update generation options without reloading the model
+    public func updateOptions(_ newOptions: Options) {
+        self.options = newOptions
     }
 
     /// Reset conversation context
@@ -612,7 +617,7 @@ extension EdgeLLM {
         var opts = options
         if let sp = systemPrompt { opts.systemPrompt = sp }
         let llm = try await EdgeLLM(model: model, options: opts)
-        return llm.stream(prompt)
+        return await llm.stream(prompt)
     }
 }
 
