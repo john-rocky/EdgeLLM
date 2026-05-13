@@ -1,5 +1,15 @@
 # EdgeLLM
 
+**Simple Swift package for running LLMs on iOS devices. Quantized 1-3B models at 15-30 t/s on iPhone 15 Pro.**
+
+By [Daisuke Majima](https://john-rocky.github.io). Maintainer of [CoreML-Models](https://github.com/john-rocky/CoreML-Models) (1,749★). See also [CoreML-LLM](https://github.com/john-rocky/CoreML-LLM) for the ANE-optimised variants.
+
+💼 **Currently solo-lead on a 94k-line production iOS retail-vision app using on-device LLM. Open to Staff / Senior iOS / Mobile ML roles.** — [john-rocky.github.io](https://john-rocky.github.io)
+
+---
+
+# EdgeLLM
+
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-Add%20Package-green)](https://swift.org/package-manager/)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](LICENSE)
 [![Release](https://img.shields.io/github/v/tag/john-rocky/EdgeLLM)](https://github.com/john-rocky/EdgeLLM/releases)
